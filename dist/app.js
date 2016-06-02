@@ -54799,7 +54799,7 @@
 	            // {name: 'PNG', syntax: 'png', description: 'Portable Network Graphics is a raster graphics file format that supports lossless data compression.'},
 	            { name: 'GeoTiff', syntax: 'geotiff', description: '' },
 	            { name: 'Tiff', syntax: 'tif', description: '' },
-	            { name: 'BMP', syntax: 'bmp', description: '' },
+	            // {name: 'BMP', syntax: 'bmp', description: ''},
 	            // {name: 'GTopo30', syntax: 'application/gtopo30', description: ''},
 	            { name: 'ArcGrid', syntax: 'ArcGrid', description: '' },
 	            { name: 'GZipped ArcGrid', syntax: 'ArcGrid-GZIP', description: '' },
