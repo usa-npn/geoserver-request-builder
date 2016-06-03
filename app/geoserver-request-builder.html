@@ -24,6 +24,7 @@
                             <button type="button" class="btn btn-default" [class.active]="isSelected('wcs')" (click)="setService('wcs')">WCS</button>
                         </div>
                     </div>
+                    <br>
                     <div class="col-md-8">
                         <div class="panel panel-default">
                             <div class="panel-body">
@@ -48,10 +49,11 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                <li *ngFor="let layer of _geoserverService.wmsLayers" (click)="setSelectedLayer(layer)">{{layer.title}}</li>
+                                <li *ngFor="let layer of _geoserverService.wmsLayers" (click)="setSelectedLayer(layer)"><a href="javascript:;">{{layer.title}}</a></li>
                             </ul>
                         </div>
                     </div>
+                    <br>
                     <div class="col-md-6">
                         <div class="panel panel-default">
                             <div class="panel-heading">Layer Description</div>
@@ -74,6 +76,7 @@
                     <div class="col-md-6">
                         <input type="checkbox" name="stateBorders" value="{{stateBorders}}" [(ngModel)]="stateBorders"> Show State Borders
                     </div>
+                    <br>
                     <div class="col-md-6">
                         <div class="panel panel-default">
                             <div class="panel-body">
@@ -94,6 +97,7 @@
                     <div class="col-md-6">
                         <input type="checkbox" name="showColorRamp" value="{{showColorRamp}}" [(ngModel)]="showColorRamp"> Show Color Ramp
                     </div>
+                    <br>
                     <div class="col-md-6">
                         <div class="panel panel-default">
                             <div class="panel-body">
@@ -116,6 +120,7 @@
                             <input type="date" required name="date" class="form-control" [(ngModel)]="selectedDate" min="1950-01-01"><br>
                         </form>
                     </div>
+                    <br>
                     <div class="col-md-6">
                         <div class="panel panel-default panel-dimension">
                             <div class="panel-heading">Valid Range</div>
@@ -137,11 +142,17 @@
                     <div class="col-md-6">
                         <input class="form-control" type="number" name="selectedDoy" min="1" max="365" [(ngModel)]="selectedDoy">
                     </div>
+                    <br>
                     <div class="col-md-6">
                         <div class="panel panel-default panel-dimension">
                             <div class="panel-heading">Valid Range</div>
                             <div class="panel-body">
-                                {{getDimensionRange()}}
+                                <div class="col-md-6">
+                                    {{getDimensionRange()}}
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="http://disc.sci.gsfc.nasa.gov/julian_calendar.html" target="_blank">Date to day of year conversion.</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -160,7 +171,7 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="wmsFormatdropdownMenu">
-                        <li *ngFor="let format of getFormats()" (click)="setSelectedFormat(format)">{{format.name}}</li>
+                        <li *ngFor="let format of getFormats()" (click)="setSelectedFormat(format)"><a href="javascript:;">{{format.name}}</a></li>
                     </ul>
                 </div>
             </div>
@@ -182,6 +193,7 @@
                             <input type="text" class="form-control" id="bbox_height" aria-describedby="height_span" [(ngModel)]="urlHeight">
                         </div>
                     </div>
+                    <br>
                     <div class="col-md-6">
                         <div class="panel panel-default">
                             <div class="panel-body">
