@@ -39411,6 +39411,8 @@
 	            return '2016-01-01 through ' + res;
 	    };
 	    AppComponent.prototype.getColorRamp = function (layer) {
+	        if (layer.name.includes('tmin') || layer.name.includes('tmax'))
+	            return 'climate:celsius_web,';
 	        if (layer.name.includes('leaf_anomaly') || layer.name.includes('bloom_anomaly'))
 	            return 'si-x:leaf_anomaly_black,';
 	        if (layer.name.includes('leaf'))
