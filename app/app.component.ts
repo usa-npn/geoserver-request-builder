@@ -110,6 +110,8 @@ export class AppComponent {
     }
 
     getColorRamp(layer:GeoserverLayer) {
+        if(layer.name.includes('tmin') || layer.name.includes('tmax'))
+            return 'climate:celsius_web,';
         if(layer.name.includes('leaf_anomaly') || layer.name.includes('bloom_anomaly'))
             return 'si-x:leaf_anomaly_black,';
         if(layer.name.includes('leaf'))
