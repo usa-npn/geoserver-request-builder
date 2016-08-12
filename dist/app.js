@@ -39456,9 +39456,9 @@
 	            if (this.selectedLayer)
 	                url = url.concat('&coverageId=' + this.selectedLayer.name);
 	            if (this.selectedDate)
-	                url = url.concat('&time=' + this.selectedDate);
+	                url = url.concat('&SUBSET=time("' + this.selectedDate + 'T00:00:00.000Z")');
 	            if (this.selectedDoy)
-	                url = url.concat('&elevation=' + this.selectedDoy.toString());
+	                url = url.concat('&SUBSET=elevation(' + this.selectedDoy.toString() + ')');
 	            if (this.selectedFormat)
 	                url = url.concat('&format=' + this.selectedFormat.syntax);
 	        }
