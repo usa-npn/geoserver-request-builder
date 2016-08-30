@@ -1,14 +1,12 @@
-import {Component} from "@angular/core";
-import {HTTP_PROVIDERS} from "@angular/http";
-import "rxjs/Rx";
+import {Component, ViewChild} from "@angular/core";
 import {GeoserverService} from "./geoserver.service";
 import {GeoserverLayer} from "./geoserver-layer";
 import {GeoserverFormat} from "./geoserver-format";
+import {ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 @Component({
     selector: 'my-app', 
-    templateUrl: 'app/geoserver-request-builder.html', 
-    providers: [GeoserverService, HTTP_PROVIDERS] 
+    templateUrl: 'app/geoserver-request-builder.html'
 })
 export class AppComponent {
 
@@ -23,6 +21,9 @@ export class AppComponent {
     showColorRamp:boolean = true;
 
     constructor(private _geoserverService: GeoserverService) {}
+
+    @ViewChild('serviceTypeModal')
+    serviceTypeModal: ModalComponent;
 
     setService(service:string) {
         this.service = service;
@@ -165,8 +166,16 @@ export class AppComponent {
         return url;
     }
 
-    openLinkInNewTab() {
-        window.open(this.getGeoserverUrl());
+    validateRequest() {
+        if(!this.isSelected('wcs') &&  !this.isSelected('wms'))
+            this.serviceTypeModal.open();
+        else
+            return true;
+    }
+
+    requestButtonPressed() {
+        if(this.validateRequest())
+            window.open(this.getGeoserverUrl());
     }
 
     ngOnInit() {

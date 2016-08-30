@@ -213,9 +213,20 @@
                 {{getGeoserverUrl()}}
             </div>
         </div>
-        <button type="button" class="btn btn-success" (click)="openLinkInNewTab()">Send Request</button>
+        <button type="button" class="btn btn-success" (click)="requestButtonPressed()">Send Request</button>
 
     </div>
 </div>
 </div>
 
+<modal #serviceTypeModal>
+    <modal-header>
+        <h4 class="modal-title">No service type selected.</h4>
+    </modal-header>
+    <modal-body>
+        Please choose a service type by clicking either the WMS or WCS button.
+    </modal-body>
+    <modal-footer>
+        <button type="button" class="btn" (click)="serviceTypeModal.close();">Close</button>
+    </modal-footer>
+</modal>
