@@ -50024,8 +50024,13 @@
 	    function AppComponent(_geoserverService, cdr) {
 	        this._geoserverService = _geoserverService;
 	        this.cdr = cdr;
+	        this.today = new Date();
+	        this.year = this.today.getFullYear();
+	        this.previousYear = this.year - 1;
+	        this.selectedYear = this.previousYear;
 	        this.stateBorders = false;
 	        this.showColorRamp = true;
+	        this.yearlyTimeStep = false;
 	    }
 	    AppComponent.prototype.selectedDateChange = function (event) {
 	        if (event.value && event.value.target && event.value.target.children[0])
@@ -50037,7 +50042,10 @@
 	        this.selectedFormat = null;
 	    };
 	    AppComponent.prototype.selectedLayerHasDate = function () {
-	        return this.selectedLayer && this.selectedLayer.dimension === 'time';
+	        return this.selectedLayer && this.selectedLayer.dimension === 'time' && !this.yearlyTimeStep;
+	    };
+	    AppComponent.prototype.selectedLayerHasYear = function () {
+	        return this.selectedLayer && this.selectedLayer.dimension === 'time' && this.yearlyTimeStep;
 	    };
 	    AppComponent.prototype.selectedLayerHasDoy = function () {
 	        return this.selectedLayer && this.selectedLayer.dimension === 'elevation';
@@ -50064,12 +50072,21 @@
 	        if (layer.dimensionRange.includes('1981')) {
 	            this.selectedDoy = null;
 	            this.selectedDate = (now.getFullYear() - 1).toString() + '-01-01';
+	            this.yearlyTimeStep = true;
 	        }
 	        if (layer.dimensionRange.includes('2016-01-01')) {
 	            this.selectedDoy = null;
 	            this.selectedDate = now.toISOString().slice(0, 10);
+	            this.yearlyTimeStep = false;
 	        }
 	        this.selectedLayer = layer;
+	    };
+	    AppComponent.prototype.getYears = function () {
+	        var years = [];
+	        for (var i = 1981; i <= this.previousYear; i++) {
+	            years.push(i);
+	        }
+	        return years;
 	    };
 	    AppComponent.prototype.getFormats = function () {
 	        if (this.service === 'wms')
@@ -50152,9 +50169,11 @@
 	                url = url.concat('&width=' + this.urlWidth.toString());
 	            if (this.urlHeight)
 	                url = url.concat('&height=' + this.urlHeight.toString());
-	            if (this.selectedDate)
+	            if (this.selectedLayerHasDate() && this.selectedDate)
 	                url = url.concat('&time=' + this.selectedDate);
-	            if (this.selectedDoy)
+	            if (this.selectedLayerHasYear() && this.selectedYear)
+	                url = url.concat('&time=' + this.selectedYear + '-01-01');
+	            if (this.selectedLayerHasDoy() && this.selectedDoy)
 	                url = url.concat('&elevation=' + this.selectedDoy.toString());
 	            if (this.selectedFormat)
 	                url = url.concat('&format=' + this.selectedFormat.syntax);
@@ -50163,51 +50182,65 @@
 	            url = url.concat('wcs?service=WCS&version=2.0.1&request=GetCoverage');
 	            if (this.selectedLayer)
 	                url = url.concat('&coverageId=' + this.selectedLayer.name);
-	            if (this.selectedDate)
+	            if (this.selectedLayerHasDate() && this.selectedDate)
 	                url = url.concat('&SUBSET=time("' + this.selectedDate + 'T00:00:00.000Z")');
-	            if (this.selectedDoy)
+	            if (this.selectedLayerHasYear() && this.selectedYear)
+	                url = url.concat('&SUBSET=time("' + this.selectedYear + '-01-01T00:00:00.000Z")');
+	            if (this.selectedLayerHasDoy() && this.selectedDoy)
 	                url = url.concat('&SUBSET=elevation(' + this.selectedDoy.toString() + ')');
 	            if (this.selectedFormat)
 	                url = url.concat('&format=' + this.selectedFormat.syntax);
 	        }
 	        return url;
 	    };
-	    AppComponent.prototype.validateRequest = function () {
+	    AppComponent.prototype.validateRequest = function (openModal) {
 	        if (!this.isSelected('wcs') && !this.isSelected('wms')) {
 	            this.validationErrorModalTitle = "No service type selected.";
 	            this.validationErrorModalBody = "Please choose a service type by clicking either the WMS or WCS button.";
+	            if (!openModal)
+	                return false;
 	            this.validationErrorModal.open();
 	        }
 	        else if (this.getSelectedLayer() === "Select a Layer") {
 	            this.validationErrorModalTitle = "No layer selected.";
 	            this.validationErrorModalBody = "Please choose a layer from the layer name dropdown.";
+	            if (!openModal)
+	                return false;
 	            this.validationErrorModal.open();
 	        }
 	        else if (this.selectedLayerHasDoy() && (!this.selectedDoy || this.selectedDoy < 1 || this.selectedDoy > 365)) {
 	            this.validationErrorModalTitle = "Invalid Day of Year.";
 	            this.validationErrorModalBody = "Please enter a day of year between 1 and 365.";
+	            if (!openModal)
+	                return false;
 	            this.validationErrorModal.open();
 	        }
 	        else if (this.getSelectedFormat() === "Select a Format") {
 	            this.validationErrorModalTitle = "No format selected.";
 	            this.validationErrorModalBody = "Please choose a format from the format dropdown.";
+	            if (!openModal)
+	                return false;
 	            this.validationErrorModal.open();
 	        }
 	        else if (!this.urlHeight || 0 > this.urlHeight || this.urlHeight > 4000) {
 	            this.validationErrorModalTitle = "Invalid height.";
 	            this.validationErrorModalBody = "Please enter a height between 1 and 4000.";
+	            if (!openModal)
+	                return false;
 	            this.validationErrorModal.open();
 	        }
 	        else if (!this.urlWidth || 0 > this.urlHeight || this.urlWidth > 4000) {
 	            this.validationErrorModalTitle = "Invalid width.";
 	            this.validationErrorModalBody = "Please enter a width between 1 and 4000.";
+	            if (!openModal)
+	                return false;
 	            this.validationErrorModal.open();
 	        }
 	        else
 	            return true;
 	    };
 	    AppComponent.prototype.requestButtonPressed = function () {
-	        if (this.validateRequest())
+	        if (this.validateRequest(true))
 	            window.open(this.getGeoserverUrl());
 	    };
 	    AppComponent.prototype.metadataButtonPressed = function () {

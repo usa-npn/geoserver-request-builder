@@ -11,7 +11,6 @@
             </div>
         </div>
 
-        <!--<div [ngClass]="getPanelClasses()">-->
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Service Type</h3>
@@ -115,11 +114,8 @@
                 <h3 class="panel-title">Date</h3>
             </div>
             <div class="panel-body">
-                <!--<div class="row">-->
+                <div class="row">
                     <div class="col-md-6">
-                        <!--<form>-->
-                            <!--<input type="date" required name="date" class="form-control" [(ngModel)]="selectedDate" min="1950-01-01"><br>-->
-                        <!--</form>-->
                         <div class="form-group">
                             <div class='input-group date' datePicker (dateChange)="selectedDateChange($event)">
                                 <input readonly="readonly" type="text" placeholder="Click calendar to select date" pattern="\d{4}-\d{1,2}-\d{1,2}" required name="date" class="form-control" [ngModel]="selectedDate" min="1950-01-01" ngControl="startDate"><br>
@@ -138,7 +134,33 @@
                             </div>
                         </div>
                     </div>
-                <!--</div>-->
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default" [class.hide]="!selectedLayerHasYear()">
+            <div class="panel-heading">
+                <h3 class="panel-title">Year</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <select class="form-control" required name="selectedYear" [(ngModel)]="selectedYear" ngControl="selectedYear">
+                            <option *ngFor="let year of getYears()" value="{{year}}">{{year}}</option>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="col-md-6">
+                    <div class="panel panel-default panel-dimension">
+                        <div class="panel-heading">Valid Range</div>
+                        <div class="panel-body">
+                            {{getDimensionRange()}}
+                        </div>
+                    </div>
+                </div>
+                </div>
             </div>
         </div>
 
@@ -216,22 +238,23 @@
 
         <div class="panel panel-default panel-url">
             <div class="panel-heading">
-                <h3 class="panel-title">URL</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h3 class="panel-title">URL</h3>
+                    </div>
+                    <div class="col-md-8">
+                        <div *ngIf="!validateRequest(false)" class="error" role="alert">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            The URL is incompete: {{validationErrorModalBody}}
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="panel-body">
                 {{getGeoserverUrl()}}
             </div>
         </div>
-
-        <!--<div class="panel panel-default panel-url">-->
-            <!--<div class="panel-heading">-->
-                <!--<h3 class="panel-title">MetaData</h3>-->
-            <!--</div>-->
-            <!--<div class="panel-body">-->
-                <!--{{getLayerMetaDataUrl()}}-->
-                <!--<button type="button" class="btn" (click)="metadataButtonPressed()">View Metadata</button>-->
-            <!--</div>-->
-        <!--</div>-->
 
         <button type="button" class="btn btn-success" (click)="requestButtonPressed()">Send Request</button>
 

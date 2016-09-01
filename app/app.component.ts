@@ -45,6 +45,10 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.cdr.detectChanges();
     }
 
+    today = new Date();
+    year = this.today.getFullYear();
+    previousYear = this.year - 1;
+
     service:string;
     urlWidth:number;
     urlHeight:number;
@@ -53,11 +57,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     minDate:string;
     maxDate:string;
     selectedDate:string;
+    selectedYear:number = this.previousYear;
     selectedDoy:number;
     stateBorders:boolean = false;
     showColorRamp:boolean = true;
     validationErrorModalTitle:String;
     validationErrorModalBody:String;
+    yearlyTimeStep:boolean = false;
 
     constructor(private _geoserverService: GeoserverService,
                 private cdr: ChangeDetectorRef) {}
@@ -71,7 +77,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     selectedLayerHasDate(): boolean {
-        return this.selectedLayer && this.selectedLayer.dimension === 'time';
+        return this.selectedLayer && this.selectedLayer.dimension === 'time' && !this.yearlyTimeStep;
+    }
+
+    selectedLayerHasYear(): boolean {
+        return this.selectedLayer && this.selectedLayer.dimension === 'time' && this.yearlyTimeStep;
     }
     
     selectedLayerHasDoy(): boolean {
@@ -102,12 +112,22 @@ export class AppComponent implements OnInit, AfterViewInit {
         if(layer.dimensionRange.includes('1981')) {
             this.selectedDoy = null;
             this.selectedDate = (now.getFullYear() - 1).toString() + '-01-01';
+            this.yearlyTimeStep = true;
         }
         if(layer.dimensionRange.includes('2016-01-01')) {
             this.selectedDoy = null;
             this.selectedDate = now.toISOString().slice(0,10);
+            this.yearlyTimeStep = false;
         }
         this.selectedLayer = layer;
+    }
+
+    getYears() {
+        let years:number[] = [];
+        for(var i = 1981; i <= this.previousYear; i++) {
+            years.push(i);
+        }
+        return years;
     }
     
     getFormats(): GeoserverFormat[] {
@@ -198,9 +218,11 @@ export class AppComponent implements OnInit, AfterViewInit {
                 url = url.concat('&width=' + this.urlWidth.toString());
             if(this.urlHeight)
                 url = url.concat('&height=' + this.urlHeight.toString());
-            if(this.selectedDate)
+            if(this.selectedLayerHasDate() && this.selectedDate)
                 url = url.concat('&time=' + this.selectedDate);
-            if(this.selectedDoy)
+            if(this.selectedLayerHasYear() && this.selectedYear)
+                url = url.concat('&time=' + this.selectedYear + '-01-01');
+            if(this.selectedLayerHasDoy() && this.selectedDoy)
                 url = url.concat('&elevation=' + this.selectedDoy.toString());
             if(this.selectedFormat)
                 url = url.concat('&format=' + this.selectedFormat.syntax);
@@ -209,9 +231,11 @@ export class AppComponent implements OnInit, AfterViewInit {
             url = url.concat('wcs?service=WCS&version=2.0.1&request=GetCoverage');
             if(this.selectedLayer)
                 url = url.concat('&coverageId=' + this.selectedLayer.name);
-            if(this.selectedDate)
+            if(this.selectedLayerHasDate() && this.selectedDate)
                 url = url.concat('&SUBSET=time("' + this.selectedDate + 'T00:00:00.000Z")');
-            if(this.selectedDoy)
+            if(this.selectedLayerHasYear() && this.selectedYear)
+                url = url.concat('&SUBSET=time("' + this.selectedYear + '-01-01T00:00:00.000Z")');
+            if(this.selectedLayerHasDoy() && this.selectedDoy)
                 url = url.concat('&SUBSET=elevation(' + this.selectedDoy.toString() + ')');
             if(this.selectedFormat)
                 url = url.concat('&format=' + this.selectedFormat.syntax);
@@ -219,20 +243,26 @@ export class AppComponent implements OnInit, AfterViewInit {
         return url;
     }
 
-    validateRequest(): boolean {
+    validateRequest(openModal): boolean {
         if(!this.isSelected('wcs') &&  !this.isSelected('wms')) {
             this.validationErrorModalTitle = "No service type selected.";
             this.validationErrorModalBody = "Please choose a service type by clicking either the WMS or WCS button.";
+            if(!openModal)
+                return false;
             this.validationErrorModal.open();
         }
         else if(this.getSelectedLayer() === "Select a Layer") {
             this.validationErrorModalTitle = "No layer selected.";
             this.validationErrorModalBody = "Please choose a layer from the layer name dropdown.";
+            if(!openModal)
+                return false;
             this.validationErrorModal.open();
         }
         else if(this.selectedLayerHasDoy() && (!this.selectedDoy || this.selectedDoy < 1 || this.selectedDoy > 365)) {
             this.validationErrorModalTitle = "Invalid Day of Year.";
             this.validationErrorModalBody = "Please enter a day of year between 1 and 365.";
+            if(!openModal)
+                return false;
             this.validationErrorModal.open();
         }
         // else if(!this.selectedLayerHasDoy() && (!this.selectedDate || this.selectedDate < this.minDate || this.selectedDate > this.maxDate)) {
@@ -243,16 +273,22 @@ export class AppComponent implements OnInit, AfterViewInit {
         else if(this.getSelectedFormat() === "Select a Format") {
             this.validationErrorModalTitle = "No format selected.";
             this.validationErrorModalBody = "Please choose a format from the format dropdown.";
+            if(!openModal)
+                return false;
             this.validationErrorModal.open();
         }
         else if(!this.urlHeight || 0 > this.urlHeight || this.urlHeight > 4000) {
             this.validationErrorModalTitle = "Invalid height.";
             this.validationErrorModalBody = "Please enter a height between 1 and 4000.";
+            if(!openModal)
+                return false;
             this.validationErrorModal.open();
         }
         else if(!this.urlWidth || 0 > this.urlHeight || this.urlWidth > 4000) {
             this.validationErrorModalTitle = "Invalid width.";
-            this.validationErrorModalBody = "Please enter a width between 1 and 4000.";
+            this.validationErrorModalBody = "Please enter a width between 1 and 4000."
+            if(!openModal)
+                return false;
             this.validationErrorModal.open();
         }
         else
@@ -260,7 +296,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     requestButtonPressed(): void {
-        if(this.validateRequest())
+        if(this.validateRequest(true))
             window.open(this.getGeoserverUrl());
     }
 

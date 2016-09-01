@@ -81,6 +81,10 @@ button:focus {outline:0;}
     font-weight: bold;
 }
 
+.panel-default > .panel-heading > .row > .col-md-4 > .panel-title {
+    font-weight: bold;
+}
+
 body {
     background:#fbfcfc;
 }
@@ -90,4 +94,13 @@ body {
 }
 .ng-invalid {
     border-left: 5px solid #a94442; /* red */
+}
+
+.error {
+    color: #a94442;
+    height: 20px;
+    padding: 0px;
+    margin: 0px;
+    text-align: right;
+    font-weight: bold;
 }
