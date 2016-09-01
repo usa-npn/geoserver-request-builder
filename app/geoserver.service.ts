@@ -22,6 +22,7 @@ export class GeoserverService {
         wmsLayers => {
             var that = this;
             this.parseString(wmsLayers, function (err, result) {
+                // console.log(result);
                 var layers:GeoserverLayer[] = [];
                 for(var layer of result.WMS_Capabilities.Capability[0].Layer[0].Layer) {
                     if(layer.Title[0] != "states" && layer.Title[0] != "average_leaf_prism_2015")
@@ -31,10 +32,11 @@ export class GeoserverService {
                             description: layer.Abstract[0],
                             dimension: layer.Dimension[0]['$']['name'],
                             dimensionRange: layer.Dimension[0]['_'],
+                            metadataUrl: layer.MetadataURL[0]['OnlineResource'][0]['$']['xlink:href'],
                             selected: false})
                 }
-                console.log(result);
-                console.log(layers);
+                
+                // console.log(layers);
                 that.wmsLayers = layers.sort(function(a:GeoserverLayer, b:GeoserverLayer) {
                     if(a.workspace < b.workspace) return -1;
                     if(a.workspace > b.workspace) return 1;

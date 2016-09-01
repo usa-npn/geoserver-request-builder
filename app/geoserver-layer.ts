@@ -5,5 +5,6 @@ export interface GeoserverLayer {
     description: string;
     dimension: string;
     dimensionRange: string;
+    metadataUrl: string;
     selected: boolean;
 }

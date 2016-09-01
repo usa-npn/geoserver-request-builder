@@ -48,7 +48,7 @@
                                 {{getSelectedLayer()}}
                                 <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <ul class="dropdown-menu dropdown-menu-short" aria-labelledby="dropdownMenu1">
                                 <li *ngFor="let layer of _geoserverService.wmsLayers" (click)="setSelectedLayer(layer)"><a href="javascript:;">{{layer.title}}</a></li>
                             </ul>
                         </div>
@@ -59,6 +59,7 @@
                             <div class="panel-heading">Layer Description</div>
                             <div class="panel-body">
                                 {{selectedLayer ? selectedLayer.description : 'Select a layer to view its description.'}}
+                                <button type="button" class="btn btn-success" [class.hide]="getSelectedLayer() === 'Select a Layer'" (click)="metadataButtonPressed()">View Layer Metadata</button>
                             </div>
                         </div>
                     </div>
@@ -114,11 +115,19 @@
                 <h3 class="panel-title">Date</h3>
             </div>
             <div class="panel-body">
-                <div class="row">
+                <!--<div class="row">-->
                     <div class="col-md-6">
-                        <form>
-                            <input type="date" required name="date" class="form-control" [(ngModel)]="selectedDate" min="1950-01-01"><br>
-                        </form>
+                        <!--<form>-->
+                            <!--<input type="date" required name="date" class="form-control" [(ngModel)]="selectedDate" min="1950-01-01"><br>-->
+                        <!--</form>-->
+                        <div class="form-group">
+                            <div class='input-group date' datePicker (dateChange)="selectedDateChange($event)">
+                                <input readonly="readonly" type="text" placeholder="Click calendar to select date" pattern="\d{4}-\d{1,2}-\d{1,2}" required name="date" class="form-control" [ngModel]="selectedDate" min="1950-01-01" ngControl="startDate"><br>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                     <br>
                     <div class="col-md-6">
@@ -129,7 +138,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                <!--</div>-->
             </div>
         </div>
 
@@ -140,7 +149,7 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <input class="form-control" type="number" name="selectedDoy" min="1" max="365" [(ngModel)]="selectedDoy">
+                        <input class="form-control" type="number" required pattern="^([1-9]|[1-9][0-9]|[1-2][0-9][0-9]|[3][0-5][0-9]|[3][6][0-5])$" min="1" max="365" name="selectedDoy" min="1" max="365" [(ngModel)]="selectedDoy">
                     </div>
                     <br>
                     <div class="col-md-6">
@@ -170,7 +179,7 @@
                         {{getSelectedFormat()}}
                         <span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="wmsFormatdropdownMenu">
+                    <ul class="dropdown-menu dropdown-menu-short" aria-labelledby="wmsFormatdropdownMenu">
                         <li *ngFor="let format of getFormats()" (click)="setSelectedFormat(format)"><a href="javascript:;">{{format.name}}</a></li>
                     </ul>
                 </div>
@@ -186,18 +195,18 @@
                     <div class="col-md-6">
                         <div class="input-group">
                             <span class="input-group-addon" id="width_span">width</span>
-                            <input type="text" class="form-control" id="bbox_width" aria-describedby="width_span" [(ngModel)]="urlWidth">
+                            <input type="number" required pattern="^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-3][0-9][0-9][0-9]|4000)$" min="1" max="4000" class="form-control" id="bbox_width" aria-describedby="width_span" [(ngModel)]="urlWidth">
                         </div><br/>
                         <div class="input-group">
                             <span class="input-group-addon" id="height_span">height</span>
-                            <input type="text" class="form-control" id="bbox_height" aria-describedby="height_span" [(ngModel)]="urlHeight">
+                            <input type="number" required pattern="^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-3][0-9][0-9][0-9]|4000)$" min="1" max="4000" class="form-control" id="bbox_height" aria-describedby="height_span" [(ngModel)]="urlHeight">
                         </div>
                     </div>
                     <br>
                     <div class="col-md-6">
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                Specify the width and height of the generated map in pixels.
+                                Specify the width and height of the generated map in pixels. Must be between 1 and 4000.
                             </div>
                         </div>
                     </div>
@@ -213,20 +222,31 @@
                 {{getGeoserverUrl()}}
             </div>
         </div>
+
+        <!--<div class="panel panel-default panel-url">-->
+            <!--<div class="panel-heading">-->
+                <!--<h3 class="panel-title">MetaData</h3>-->
+            <!--</div>-->
+            <!--<div class="panel-body">-->
+                <!--{{getLayerMetaDataUrl()}}-->
+                <!--<button type="button" class="btn" (click)="metadataButtonPressed()">View Metadata</button>-->
+            <!--</div>-->
+        <!--</div>-->
+
         <button type="button" class="btn btn-success" (click)="requestButtonPressed()">Send Request</button>
 
     </div>
 </div>
 </div>
 
-<modal #serviceTypeModal>
+<modal #validationErrorModal>
     <modal-header>
-        <h4 class="modal-title">No service type selected.</h4>
+        <h4 class="modal-title">{{validationErrorModalTitle}}</h4>
     </modal-header>
     <modal-body>
-        Please choose a service type by clicking either the WMS or WCS button.
+        {{validationErrorModalBody}}
     </modal-body>
     <modal-footer>
-        <button type="button" class="btn" (click)="serviceTypeModal.close();">Close</button>
+        <button type="button" class="btn btn-default" (click)="validationErrorModal.close();">Close</button>
     </modal-footer>
 </modal>
