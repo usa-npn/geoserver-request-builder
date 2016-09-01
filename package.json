@@ -2,8 +2,7 @@
   "name": "npn-geoserver-request-builder",
   "version": "1.0.0",
   "scripts": {
-    "dev": "webpack --progress --colors",
-    "ops": "webpack --progress --colors --optimize-minimize",
+    "build": "webpack --progress --colors",
     "start": "webpack-dev-server"
   },
   "license": "ISC",
