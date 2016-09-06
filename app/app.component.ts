@@ -176,24 +176,36 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
     }
 
-    getColorRamp(layer:GeoserverLayer): string {
+    getLayerStyle(layer:GeoserverLayer): string {
         if(layer.name.includes('tmin') || layer.name.includes('tmax'))
-            return 'climate:celsius_web,';
+            return 'climate:celsius_web';
         if(layer.name.includes('leaf_anomaly') || layer.name.includes('bloom_anomaly'))
-            return 'si-x:leaf_anomaly_black,';
+            return 'si-x:leaf_anomaly_black';
         if(layer.name.includes('leaf'))
-            return 'si-x:leafout_bimonthly_web,';
+            return 'si-x:leafout_bimonthly_web';
         if(layer.name.includes('bloom'))
-            return 'si-x:bloom_bimonthly_web,';
+            return 'si-x:bloom_bimonthly_web';
         if(layer.name.includes('agdd_anomaly'))
             return null;
         if(layer.name.includes('agdd'))
-            return 'gdd:agdd_web,';
+            return 'gdd:agdd_web';
     }
     
     getLayerMetaDataUrl(): string {
         if(this.selectedLayer)
             return this.selectedLayer.metadataUrl;
+        else
+            return "";
+    }
+    
+    getLayerColorRampUrl(): string {
+        if(this.selectedLayer) {
+            let colorRampUrl = this.selectedLayer.legendUrl;
+            let style = this.getLayerStyle(this.selectedLayer)
+            if(style)
+                colorRampUrl += ('&style=' + style);
+            return colorRampUrl;
+        }
         else
             return "";
     }
@@ -206,9 +218,9 @@ export class AppComponent implements OnInit, AfterViewInit {
                 url = url.concat('&layers=' + this.selectedLayer.name);
                 if(this.stateBorders)
                     url = url.concat(',' + this.selectedLayer.workspace + ':states');
-                let colorRamp = this.getColorRamp(this.selectedLayer);
-                if(colorRamp) 
-                    url = url.concat('&styles=' + colorRamp);
+                let style = this.getLayerStyle(this.selectedLayer);
+                if(style) 
+                    url = url.concat('&styles=' + style + ',');
                 if(this.showColorRamp)
                     url = url.concat('&format_options=layout:provisional');
                 else
@@ -302,6 +314,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     metadataButtonPressed(): void {
         window.open(this.getLayerMetaDataUrl());
+    }
+    
+    colorrampButtonPressed(): void {
+        window.open(this.getLayerColorRampUrl());
     }
 
     ngOnInit() {

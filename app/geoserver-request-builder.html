@@ -101,7 +101,8 @@
                     <div class="col-md-6">
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                Check this box if you would like to show the color ramp next to the map.
+                                Check the box on the left if you would like to show the color ramp next to the map. Click the button below to view the color ramp in a new tab.
+                                <button type="button" class="btn btn-success" [class.hide]="getSelectedLayer() === 'Select a Layer'" (click)="colorrampButtonPressed()">View Color Ramp</button>
                             </div>
                         </div>
                     </div>
