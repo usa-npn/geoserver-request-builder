@@ -83,7 +83,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     selectedLayerHasYear(): boolean {
         return this.selectedLayer && this.selectedLayer.dimension === "time" && this.yearlyTimeStep;
     }
-    
+
     selectedLayerHasDoy(): boolean {
         return this.selectedLayer && this.selectedLayer.dimension === "elevation";
     }
@@ -112,7 +112,16 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (layer.dimensionRange.includes("1981")) {
             this.selectedDoy = null;
             this.selectedDate = (now.getFullYear() - 1).toString() + "-01-01";
+            this.selectedYear = now.getFullYear() - 1;
             this.yearlyTimeStep = true;
+            this.setYears(1981, this.previousYear);
+        }
+        if (layer.dimensionRange.includes("1880")) {
+            this.selectedDoy = null;
+            this.selectedDate = "2013-01-01";
+            this.selectedYear = 2013;
+            this.yearlyTimeStep = true;
+            this.setYears(1880, 2013);
         }
         if (layer.dimensionRange.includes("2016-01-01")) {
             this.selectedDoy = null;
@@ -122,12 +131,13 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.selectedLayer = layer;
     }
 
-    getYears() {
-        let years: number[] = [];
-        for (let i = 1981; i <= this.previousYear; i++) {
-            years.push(i);
+    years: number[] = [];
+    setYears(minYear, maxYear) {
+        this.years = [];
+        for (let i = minYear; i <= maxYear; i++) {
+            this.years.push(i);
         }
-        return years;
+        return this.years;
     }
     
     getFormats(): GeoserverFormat[] {
@@ -169,6 +179,11 @@ export class AppComponent implements OnInit, AfterViewInit {
             this.maxDate = (rightNow.getFullYear() - 1).toString() + "-01-01";
             return "1981-01-01 through " + (rightNow.getFullYear() - 1).toString() + "-01-01";
         }
+        if (this.selectedLayer.dimensionRange.includes("1880")) {
+            this.minDate = "1880-01-01";
+            this.maxDate = "2013-01-01";
+            return "1880-01-01 through 2013-01-01";
+        }
         if (this.selectedLayer.dimensionRange.includes("2016-01-01")) {
             this.minDate = "2016-01-01";
             this.maxDate = res;
@@ -181,6 +196,12 @@ export class AppComponent implements OnInit, AfterViewInit {
             return "climate:celsius_web";
         if (layer.name.includes("leaf_anomaly") || layer.name.includes("bloom_anomaly"))
             return "si-x:leaf_anomaly_black";
+        if (layer.name.includes("leaf_best")) {
+            return "si-x:leafout_best_web";
+        }
+        if (layer.name.includes("bloom_best")) {
+            return "si-x:bloom_best_web";
+        }
         if (layer.name.includes("leaf"))
             return "si-x:leafout_bimonthly_web";
         if (layer.name.includes("bloom"))
@@ -211,10 +232,19 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     getGeoserverUrl(): string {
-        let url: string = "https://geoserver.usanpn.org/geoserver/";
+        let url: string = "";
+        if (location.hostname.includes("local"))
+            url = "https://geoserver-dev.usanpn.org/geoserver/";
+        else if (location.hostname.includes("dev"))
+            url = "https://geoserver-dev.usanpn.org/geoserver/";
+        else
+            url = "https://geoserver.usanpn.org/geoserver/";
         if (this.isSelected("wms")) {
-            url = url.concat("wms?service=WMS&request=GetMap&bbox=-125.020833333333,24.0625,-66.479166666662,49.937500000002&srs=EPSG:4269");
+            // url = url.concat("wms?service=WMS&request=GetMap&bbox=-125.020833333333,24.0625,-66.479166666662,49.937500000002&srs=EPSG:4269");
             if (this.selectedLayer) {
+                url = url.concat(`wms?service=WMS&request=GetMap`);
+                url = url.concat(`&bbox=${this.selectedLayer.miny},${this.selectedLayer.minx},${this.selectedLayer.maxy},${this.selectedLayer.maxx}`);
+                url = url.concat(`&srs=${this.selectedLayer.crs}`);
                 url = url.concat("&layers=" + this.selectedLayer.name);
                 if (this.stateBorders)
                     url = url.concat("," + this.selectedLayer.workspace + ":states");

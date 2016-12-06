@@ -11,7 +11,7 @@ export class GeoserverService {
   constructor (private http: Http) {}
   parseString = require("xml2js").parseString;
 
-  private wmsCapabilitiesUrl = "https://geoserver.usanpn.org/geoserver/ows?service=wms&version=1.3.0&request=GetCapabilities";
+  // private wmsCapabilitiesUrl = "https://geoserver.usanpn.org/geoserver/ows?service=wms&version=1.3.0&request=GetCapabilities";
   public wmsLayers: GeoserverLayer[];
   errorMessage: string;
 
@@ -23,16 +23,39 @@ export class GeoserverService {
                 console.log(result);
                 let layers: GeoserverLayer[] = [];
                 for (let layer of result.WMS_Capabilities.Capability[0].Layer[0].Layer) {
-                    if (layer.Title[0] !== "states" && layer.Title[0] !== "average_leaf_prism_2015")
-                        layers.push({workspace: layer.Name[0].split(":")[0],
-                            name: layer.Name[0],
-                            title: layer.Title[0],
-                            description: layer.Abstract[0],
-                            dimension: layer.Dimension[0]["$"]["name"],
-                            dimensionRange: layer.Dimension[0]["_"],
-                            metadataUrl: layer.MetadataURL[0]["OnlineResource"][0]["$"]["xlink:href"],
-                            legendUrl: layer.Style[0]["LegendURL"][0]["OnlineResource"][0]["$"]["xlink:href"],
-                            selected: false});
+                    if (layer.Dimension && layer.Style) {
+                        if (layer.Title[0] !== "states" && layer.Title[0] !== "average_leaf_prism_2015") {
+                            let crs, maxx, maxy, minx, miny = null;
+                            for (let bbox of layer.BoundingBox) {
+                                if (bbox["$"] && bbox["$"]["CRS"] === "EPSG:4269") {
+                                    crs = bbox["$"]["CRS"];
+                                    maxx = bbox["$"]["maxx"];
+                                    maxy = bbox["$"]["maxy"];
+                                    minx = bbox["$"]["minx"];
+                                    miny = bbox["$"]["miny"];
+                                }
+                            }
+                            let metaData = null;
+                            if (layer.MetadataURL)
+                                metaData = layer.MetadataURL[0]["OnlineResource"][0]["$"]["xlink:href"];
+                            layers.push({
+                                workspace: layer.Name[0].split(":")[0],
+                                name: layer.Name[0],
+                                title: layer.Title[0],
+                                description: layer.Abstract[0],
+                                dimension: layer.Dimension[0]["$"]["name"],
+                                dimensionRange: layer.Dimension[0]["_"],
+                                metadataUrl: metaData,
+                                legendUrl: layer.Style[0]["LegendURL"][0]["OnlineResource"][0]["$"]["xlink:href"],
+                                maxx: maxx,
+                                maxy: maxy,
+                                minx: minx,
+                                miny: miny,
+                                crs: crs,
+                                selected: false
+                            });
+                        }
+                    }
                 }
                 // console.log(layers);
                 that.wmsLayers = layers.sort(function(a: GeoserverLayer, b: GeoserverLayer) {
@@ -49,9 +72,16 @@ export class GeoserverService {
   }
 
   getWmsLayers() {
-    return this.http.get(this.wmsCapabilitiesUrl)
-        .map(res => <any> res.text())
-        .catch(this.handleError);
+      let wmsCapabilitiesUrl = "";
+      if (location.hostname.includes("local"))
+          wmsCapabilitiesUrl = "https://geoserver-dev.usanpn.org/geoserver/ows?service=wms&version=1.3.0&request=GetCapabilities";
+      else if (location.hostname.includes("dev"))
+          wmsCapabilitiesUrl = "https://geoserver-dev.usanpn.org/geoserver/ows?service=wms&version=1.3.0&request=GetCapabilities";
+      else
+          wmsCapabilitiesUrl = "https://geoserver.usanpn.org/geoserver/ows?service=wms&version=1.3.0&request=GetCapabilities";
+      return this.http.get(wmsCapabilitiesUrl)
+          .map(res => <any> res.text())
+          .catch(this.handleError);
   }
 
   private handleError (error: Response) {
