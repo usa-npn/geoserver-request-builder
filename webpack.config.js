@@ -9,6 +9,7 @@ module.exports = {
         path: __dirname + '/dist',
         filename: "[name].js"
     },
+    devtool: "source-map",
     resolve: {
         extensions: ['', '.js', '.ts']
     },
@@ -18,11 +19,5 @@ module.exports = {
             loaders: ['ts-loader'],
             exclude: /node_modules/
         }]
-    },
-    plugins: [
-        new webpack.optimize.UglifyJsPlugin({
-            sourceMap: false,
-            mangle: false
-        })
-    ]
+    }
 };

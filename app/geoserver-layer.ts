@@ -7,5 +7,10 @@ export interface GeoserverLayer {
     dimensionRange: string;
     metadataUrl: string;
     legendUrl: string;
+    maxx: string;
+    maxy: string;
+    minx: string;
+    miny: string;
+    crs: string;
     selected: boolean;
 }

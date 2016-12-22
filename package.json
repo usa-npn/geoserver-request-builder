@@ -10,10 +10,11 @@
     "@angular/common": "2.0.0-rc.5",
     "@angular/compiler": "2.0.0-rc.5",
     "@angular/core": "2.0.0-rc.5",
+    "@angular/forms": "0.3.0",
     "@angular/http": "2.0.0-rc.5",
     "@angular/platform-browser": "2.0.0-rc.5",
     "@angular/platform-browser-dynamic": "2.0.0-rc.5",
-    "@angular/forms": "0.3.0",
+    "@types/es6-shim": "^0.31.32",
     "bootstrap": "^3.3.7",
     "es6-promise": "^3.0.2",
     "es6-shim": "^0.35.0",
@@ -22,13 +23,13 @@
     "reflect-metadata": "0.1.2",
     "rxjs": "5.0.0-beta.6",
     "systemjs": "^0.19.6",
+    "tslint": "^4.0.2",
     "xml2js": "^0.4.16",
     "zone.js": "^0.6.12"
   },
   "devDependencies": {
     "ts-loader": "latest",
-    "typescript": "^1.7.3",
-    "typings": "^0.8.1",
+    "typescript": "^2.1.1",
     "webpack": "latest",
     "webpack-dev-server": "latest"
   }
