@@ -278,13 +278,13 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (layer.name.includes("arnoldred_leaf_ncep_historic"))
             return "Arnold Red Honeysuckle First Leaf " + yearText + " Using NCEP Data";
         if (layer.name.includes("zabelli_leaf_ncep_historic"))
-            return "Zabelli First Leaf " + yearText + " Using NCEP Data";
+            return "Zabelii First Leaf " + yearText + " Using NCEP Data";
         if (layer.name.includes("lilac_leaf_ncep_historic"))
             return "Lilac First Leaf " + yearText + " Using NCEP Data";
         if (layer.name.includes("arnoldred_bloom_ncep_historic"))
             return "Arnold Red Honeysuckle First Bloom " + yearText + " Using NCEP Data";
         if (layer.name.includes("zabelli_bloom_ncep_historic"))
-            return "Zabelli First Bloom " + yearText + " Using NCEP Data";
+            return "Zabelii First Bloom " + yearText + " Using NCEP Data";
         if (layer.name.includes("lilac_bloom_ncep_historic"))
             return "Lilac First Bloom " + yearText + " Using NCEP Data";
         if (layer.name.includes("average_leaf_ncep_historic"))
@@ -295,13 +295,13 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (layer.name.includes("si-x:arnoldred_leaf_ncep"))
             return "Arnold Red Honeysuckle First Leaf Through " + dateText + " Using NCEP Data";
         if (layer.name.includes("si-x:zabelli_leaf_ncep"))
-            return "Zabelli First Leaf Through " + dateText + " Using NCEP Data";
+            return "Zabelii First Leaf Through " + dateText + " Using NCEP Data";
         if (layer.name.includes("si-x:lilac_leaf_ncep"))
             return "Lilac First Leaf Through " + dateText + " Using NCEP Data";
         if (layer.name.includes("si-x:arnoldred_bloom_ncep"))
             return "Arnold Red Honeysuckle First Bloom Through " + dateText + " Using NCEP Data";
         if (layer.name.includes("si-x:zabelli_bloom_ncep"))
-            return "Zabelli First Bloom Through " + dateText + " Using NCEP Data";
+            return "Zabelii First Bloom Through " + dateText + " Using NCEP Data";
         if (layer.name.includes("si-x:lilac_bloom_ncep"))
             return "Lilac First Bloom Through " + dateText + " Using NCEP Data";
         if (layer.name.includes("si-x:average_leaf_ncep"))
@@ -312,13 +312,13 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (layer.name.includes("si-x:arnoldred_leaf_prism"))
             return "Arnold Red Honeysuckle First Leaf " + yearText + " Using PRISM Data";
         if (layer.name.includes("si-x:zabelli_leaf_prism"))
-            return "Zabelli First Leaf " + yearText + " Using PRISM Data";
+            return "Zabelii First Leaf " + yearText + " Using PRISM Data";
         if (layer.name.includes("si-x:lilac_leaf_prism"))
             return "Lilac First Leaf " + yearText + " Using PRISM Data";
         if (layer.name.includes("si-x:arnoldred_bloom_prism"))
             return "Arnold Red Honeysuckle First Bloom " + yearText + " Using PRISM Data";
         if (layer.name.includes("si-x:zabelli_bloom_prism"))
-            return "Zabelli First Bloom " + yearText + " Using PRISM Data";
+            return "Zabelii First Bloom " + yearText + " Using PRISM Data";
         if (layer.name.includes("si-x:lilac_bloom_prism"))
             return "Lilac First Bloom " + yearText + " Using PRISM Data";
         if (layer.name.includes("si-x:average_leaf_prism"))
