@@ -1,23 +1,34 @@
 var webpack = require("webpack");
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
-        polyfills: ['es6-shim/es6-shim.js', 'reflect-metadata/Reflect.js', 'zone.js/dist/zone.js'],
-        app: "./app/boot.ts"
+        bundle: ['bootstrap-loader', 'es6-shim/es6-shim.js', 'reflect-metadata/Reflect.js', 'zone.js/dist/zone.js', './app/boot.ts']
     },
     output: {
         path: __dirname + '/dist',
-        filename: "[name].js"
+        filename: "[name].[hash].js"
     },
     devtool: "source-map",
     resolve: {
-        extensions: ['', '.js', '.ts']
+        extensions: ['.js', '.ts']
     },
     module: {
-        loaders: [{
-            test: /\.ts$/,
-            loaders: ['ts-loader'],
-            exclude: /node_modules/
-        }]
-    }
+        rules: [
+            {
+                test: /\.ts$/,
+                loaders: ['ts-loader', 'angular2-template-loader'],
+                exclude: /node_modules/
+            },
+            {   test: /\.html/,
+                loader: 'html-loader?minimize=false'
+            }
+        ]
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: 'index.html',
+            inject: 'head'
+        })
+    ]
 };
