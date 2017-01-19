@@ -93,11 +93,11 @@ body {
     border-left: 5px solid #42A948; /* green */
 }
 .ng-invalid {
-    border-left: 5px solid #a37ab7; /* red #a94442; */
+    border-left: 5px solid #a94442; /* red */
 }
 
 .error {
-    color: #a37ab7;
+    color: #a94442;
     height: 20px;
     padding: 0px;
     margin: 0px;
