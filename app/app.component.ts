@@ -9,6 +9,7 @@ import {ModalComponent, MODAL_DIRECTIVES} from "ng2-bs3-modal/ng2-bs3-modal";
 
 
 declare var $: any;
+declare var require: any;
 
 @Directive({
     selector: "[datePicker]"
@@ -35,7 +36,7 @@ export class DatePicker implements OnInit {
 @Component({
     selector: "my-app",
     directives: [MODAL_DIRECTIVES, DatePicker],
-    templateUrl: "app/geoserver-request-builder.html"
+    templateUrl: "./geoserver-request-builder.html"
 })
 export class AppComponent implements OnInit, AfterViewInit {
 
