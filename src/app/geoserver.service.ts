@@ -1,8 +1,8 @@
-import {Injectable} from "@angular/core";
-import {Http, Response} from "@angular/http";
-import {Observable} from "rxjs/Observable";
-import {GeoserverLayer} from "./geoserver-layer";
-import {GeoserverFormat} from "./geoserver-format";
+import { Injectable } from "@angular/core";
+import { Http, Response } from "@angular/http";
+import { Observable } from "rxjs/Observable";
+import { GeoserverLayer } from "./geoserver-layer";
+import { GeoserverFormat } from "./geoserver-format";
 
 declare function require(name: string);
 

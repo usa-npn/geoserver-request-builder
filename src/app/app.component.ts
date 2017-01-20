@@ -1,37 +1,11 @@
-import {
-    Component, ViewChild, ElementRef, OnInit, Directive, Output, EventEmitter, ChangeDetectorRef,
-    AfterViewInit
-} from "@angular/core";
-import {GeoserverService} from "./geoserver.service";
-import {GeoserverLayer} from "./geoserver-layer";
-import {GeoserverFormat} from "./geoserver-format";
+import { Component, ViewChild, OnInit, ChangeDetectorRef, AfterViewInit } from "@angular/core";
+import { GeoserverService } from "./geoserver.service";
+import { GeoserverLayer } from "./geoserver-layer";
+import { GeoserverFormat } from "./geoserver-format";
 import { ModalComponent } from "ng2-bs3-modal/ng2-bs3-modal";
 
 
-declare var $: any;
 declare var require: any;
-
-@Directive({
-    selector: "[datePicker]"
-})
-export class DatePicker implements OnInit {
-    @Output() dateChange = new EventEmitter();
-    private element: ElementRef;
-
-    constructor(element: ElementRef) {
-        this.element = element;
-    }
-
-    public ngOnInit(): void {
-        let that = this;
-        $(this.element.nativeElement).datetimepicker({format: "YYYY-MM-DD", ignoreReadonly: true});
-        $(this.element.nativeElement).on("dp.change", function (e) {
-            that.dateChange.emit({
-                value: e
-            });
-        });
-    }
-}
 
 @Component({
     selector: "my-app",
