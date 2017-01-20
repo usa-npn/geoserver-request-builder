@@ -42,13 +42,7 @@ npm start
 
 ## Deployment
 
-A common deployment will look like this
-```
-cd geoserver-request-builder
-sudo git pull
-sudo npm install - this is only needed if the commit added a new npm package
-sudo npm run build
-```
+This project is automatically deployed using [TeamCity](https://www.jetbrains.com/teamcity/). The dist folder created from npm run build contains all javascript and assets needed with index.html being the application entry point.
 
 ## Related Projects
 
