@@ -13,5 +13,5 @@
     "alert": true,
     "button": true
   },
-  "appStyles": "./styles.css"
+  "appStyles": "./src/styles.css"
 }

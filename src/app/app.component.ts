@@ -5,7 +5,7 @@ import {
 import {GeoserverService} from "./geoserver.service";
 import {GeoserverLayer} from "./geoserver-layer";
 import {GeoserverFormat} from "./geoserver-format";
-import {ModalComponent, MODAL_DIRECTIVES} from "ng2-bs3-modal/ng2-bs3-modal";
+import { ModalComponent } from "ng2-bs3-modal/ng2-bs3-modal";
 
 
 declare var $: any;
@@ -35,8 +35,7 @@ export class DatePicker implements OnInit {
 
 @Component({
     selector: "my-app",
-    directives: [MODAL_DIRECTIVES, DatePicker],
-    templateUrl: "./geoserver-request-builder.html"
+    templateUrl: "geoserver-request-builder.html"
 })
 export class AppComponent implements OnInit, AfterViewInit {
 

@@ -3,7 +3,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
-        bundle: ['bootstrap-loader', 'es6-shim/es6-shim.js', 'reflect-metadata/Reflect.js', 'zone.js/dist/zone.js', './app/boot.ts']
+        bundle: ['bootstrap-loader', 'es6-shim/es6-shim.js', 'reflect-metadata/Reflect.js', 'zone.js/dist/zone.js', './src/app/boot.ts']
     },
     output: {
         path: __dirname + '/dist',
@@ -27,7 +27,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'index.html',
+            template: 'src/index.html',
             inject: 'head'
         })
     ]
