@@ -1,6 +1,7 @@
 {
   "name": "npn-geoserver-request-builder",
   "version": "1.0.0",
+  "author": "Jeff Switzer <jeff@usanpn.org>",
   "scripts": {
     "clean": "rm -rf dist",
     "cleanJeff": "RD /S /Q D:\\npn\\geoserver-request-builder\\dist",
