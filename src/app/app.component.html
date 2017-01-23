@@ -1,0 +1,276 @@
+<div class="container">
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h1 class="panel-title">{{title}}</h1>
+    </div>
+    <div class="panel-body">
+
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <strong>Complete the fields below to build a request url for the USA-NPN Geoserver instance. Once your request is built you can copy the url or click the 'Send Request' button to view the map in a new tab or download the coverage requested.</strong>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Service Type</h3>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="btn-group" role="group" aria-label="...">
+                <button type="button" class="btn btn-default" [class.active]="isSelected('wms')" (click)="setService('wms')">WMS</button>
+                <button type="button" class="btn btn-default" [class.active]="isSelected('wcs')" (click)="setService('wcs')">WCS</button>
+              </div>
+            </div>
+            <br>
+            <div class="col-md-8">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  WMS (Web Mapping Service) and WCS (Web Coverage Service) are two OGC (Open Geospatial Consortium) web service standards that the NPN Geoserver instance exposes. Each layer can be accessed via either service. The WMS service can deliver raster images of various types including jpegs, animated gifs, geotiffs, and openlayers. When something more than a simple image is required WCS should be used. An example of this is when the underlying raster data is needed to be used in geospatial analysis.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Layer Name</h3>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  {{getSelectedLayer()}}
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-short" aria-labelledby="dropdownMenu1">
+                  <li *ngFor="let layer of _geoserverService.wmsLayers" (click)="setSelectedLayer(layer)"><a href="javascript:;">{{layer.title}}</a></li>
+                </ul>
+              </div>
+            </div>
+            <br>
+            <div class="col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-heading">Layer Description</div>
+                <div class="panel-body">
+                  {{selectedLayer ? selectedLayer.description : 'Select a layer to view its description.'}}
+                  <button type="button" class="btn btn-success" [class.hide]="getSelectedLayer() === 'Select a Layer'" (click)="metadataButtonPressed()">View Layer Metadata</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="panel panel-default" [class.hide]="!isSelected('wms')">
+        <div class="panel-heading">
+          <h3 class="panel-title">State Borders</h3>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <input type="checkbox" name="stateBorders" value="{{stateBorders}}" [(ngModel)]="stateBorders"> Show State Borders
+            </div>
+            <br>
+            <div class="col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  Check this box if you would like the generated map to show state borders.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default" [class.hide]="!isSelected('wms')">
+        <div class="panel-heading">
+          <h3 class="panel-title">Color Ramp</h3>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <input type="checkbox" name="showColorRamp" value="{{showColorRamp}}" [(ngModel)]="showColorRamp"> Show Color Ramp
+            </div>
+            <br>
+            <div class="col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  Check the box on the left if you would like to show the color ramp next to the map. Click the button below to view the color ramp in a new tab.
+                  <button type="button" class="btn btn-success" [class.hide]="getSelectedLayer() === 'Select a Layer'" (click)="colorrampButtonPressed()">View Color Ramp</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default" [class.hide]="!selectedLayerHasDate()">
+        <div class="panel-heading">
+          <h3 class="panel-title">Date</h3>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class='input-group date' datePicker (dateChange)="selectedDateChange($event)">
+                  <input readonly="readonly" type="text" placeholder="Click calendar to select date" pattern="\d{4}-\d{1,2}-\d{1,2}" required name="date" class="form-control" [ngModel]="selectedDate" min="1950-01-01" ngControl="startDate"><br>
+                  <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="col-md-6">
+              <div class="panel panel-default panel-dimension">
+                <div class="panel-heading">Valid Range</div>
+                <div class="panel-body">
+                  {{getDimensionRange()}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default" [class.hide]="!selectedLayerHasYear()">
+        <div class="panel-heading">
+          <h3 class="panel-title">Year</h3>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <select class="form-control" required name="selectedYear" [(ngModel)]="selectedYear" ngControl="selectedYear">
+                  <option *ngFor="let year of years" value="{{year}}">{{year}}</option>
+                </select>
+              </div>
+            </div>
+            <br>
+            <div class="col-md-6">
+              <div class="panel panel-default panel-dimension">
+                <div class="panel-heading">Valid Range</div>
+                <div class="panel-body">
+                  {{getDimensionRange()}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default" [class.hide]="!selectedLayerHasDoy()">
+        <div class="panel-heading">
+          <h3 class="panel-title">Day of Year</h3>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <input class="form-control" type="number" required pattern="^([1-9]|[1-9][0-9]|[1-2][0-9][0-9]|[3][0-5][0-9]|[3][6][0-5])$" min="1" max="365" name="selectedDoy" min="1" max="365" [(ngModel)]="selectedDoy">
+            </div>
+            <br>
+            <div class="col-md-6">
+              <div class="panel panel-default panel-dimension">
+                <div class="panel-heading">Valid Range</div>
+                <div class="panel-body">
+                  <div class="col-md-6">
+                    {{getDimensionRange()}}
+                  </div>
+                  <div class="col-md-6">
+                    <a href="http://disc.sci.gsfc.nasa.gov/julian_calendar.html" target="_blank">Day of Year Calendar</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Format</h3>
+        </div>
+        <div class="panel-body">
+          <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="wmsFormatdropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              {{getSelectedFormat()}}
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-short" aria-labelledby="wmsFormatdropdownMenu">
+              <li *ngFor="let format of getFormats()" (click)="setSelectedFormat(format)"><a href="javascript:;">{{format.name}}</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default" [class.hide]="!isSelected('wms')">
+        <div class="panel-heading">
+          <h3 class="panel-title">Size</h3>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-addon" id="width_span">width</span>
+                <input type="number" required pattern="^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-3][0-9][0-9][0-9]|4000)$" min="1" max="4000" class="form-control" id="bbox_width" aria-describedby="width_span" [(ngModel)]="urlWidth">
+              </div><br/>
+              <div class="input-group">
+                <span class="input-group-addon" id="height_span">height</span>
+                <input type="number" required pattern="^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-3][0-9][0-9][0-9]|4000)$" min="1" max="4000" class="form-control" id="bbox_height" aria-describedby="height_span" [(ngModel)]="urlHeight">
+              </div>
+            </div>
+            <br>
+            <div class="col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  Specify the width and height of the generated map in pixels. Must be between 1 and 4000.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default panel-url">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-4">
+              <h3 class="panel-title">URL</h3>
+            </div>
+            <div class="col-md-8">
+              <div *ngIf="!validateRequest(false)" class="error" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                The URL is incomplete: {{validationErrorModalBody}}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          {{getGeoserverUrl()}}
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-success" (click)="requestButtonPressed()">Send Request</button>
+
+    </div>
+  </div>
+</div>
+
+<modal #validationErrorModal>
+  <modal-header>
+    <h4 class="modal-title">{{validationErrorModalTitle}}</h4>
+  </modal-header>
+  <modal-body>
+    {{validationErrorModalBody}}
+  </modal-body>
+  <modal-footer>
+    <button type="button" class="btn btn-default" (click)="validationErrorModal.close();">Close</button>
+  </modal-footer>
+</modal>
