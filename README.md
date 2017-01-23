@@ -26,7 +26,7 @@ npm install
 ```
 The command installs all dependencies listed in the package.json file into a folder called node_modules.
 
-[Webpack](https://webpack.github.io/) is used to build and bundle the project.
+This project takes advantage of the [angular cli](https://cli.angular.io/) which uses webpack to build and bundle the project. An npm build script is setup to trigger this process.
 
 ```
 cd geoserver-request-builder
