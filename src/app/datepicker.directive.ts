@@ -1,9 +1,9 @@
-import { ElementRef, OnInit, Directive, Output, EventEmitter } from "@angular/core";
+import { ElementRef, OnInit, Directive, Output, EventEmitter } from '@angular/core';
 
 declare var $: any;
 
 @Directive({
-    selector: "[datePicker]"
+    selector: '[datePicker]'
 })
 export class DatePicker implements OnInit {
     @Output() dateChange = new EventEmitter();
@@ -16,10 +16,10 @@ export class DatePicker implements OnInit {
     public ngOnInit(): void {
         let that = this;
         $(this.element.nativeElement).datetimepicker({
-            format: "YYYY-MM-DD",
+            format: 'YYYY-MM-DD',
             ignoreReadonly: true
         });
-        $(this.element.nativeElement).on("dp.change", function (e) {
+        $(this.element.nativeElement).on('dp.change', function (e) {
             that.dateChange.emit({
                 value: e
             });
