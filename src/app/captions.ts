@@ -16,14 +16,14 @@ export function getCaption(layerName, dateText, yearText, doyText) {
     // agdd prism
     [`gdd:agdd_prism`, `PRISM Accumulated Growing Degree Days 32F Base Temp Through ${dateText} Using PRISM Data`],
     // spring index historic ncep
-    [`si-x:six_arnoldred_leaf_ncep_historic`, `Arnold Red Honeysuckle First Leaf ${yearText} Using NCEP Data`],
-    [`si-x:six_zabelli_leaf_ncep_historic`, `Zabelii First Leaf ${yearText} Using NCEP Data`],
-    [`si-x:six_lilac_leaf_ncep_historic`, `Lilac First Leaf ${yearText} Using NCEP Data`],
-    [`si-x:six_arnoldred_bloom_ncep_historic`, `Arnold Red Honeysuckle First Bloom ${yearText} Using NCEP Data`],
-    [`si-x:six_zabelli_bloom_ncep_historic`, `Zabelii First Bloom ${yearText} Using NCEP Data`],
-    [`si-x:six_lilac_bloom_ncep_historic`, `Lilac First Bloom ${yearText} Using NCEP Data`],
-    [`si-x:six_average_leaf_ncep_historic`, `Spring Index First Leaf ${yearText} Using NCEP Data`],
-    [`si-x:six_average_bloom_ncep_historic`, `Spring Index First Bloom ${yearText} Using NCEP Data`],
+    [`si-x:arnoldred_leaf_ncep_historic`, `Arnold Red Honeysuckle First Leaf ${yearText} Using NCEP Data`],
+    [`si-x:zabelli_leaf_ncep_historic`, `Zabelii First Leaf ${yearText} Using NCEP Data`],
+    [`si-x:lilac_leaf_ncep_historic`, `Lilac First Leaf ${yearText} Using NCEP Data`],
+    [`si-x:arnoldred_bloom_ncep_historic`, `Arnold Red Honeysuckle First Bloom ${yearText} Using NCEP Data`],
+    [`si-x:zabelli_bloom_ncep_historic`, `Zabelii First Bloom ${yearText} Using NCEP Data`],
+    [`si-x:lilac_bloom_ncep_historic`, `Lilac First Bloom ${yearText} Using NCEP Data`],
+    [`si-x:average_leaf_ncep_historic`, `Spring Index First Leaf ${yearText} Using NCEP Data`],
+    [`si-x:average_bloom_ncep_historic`, `Spring Index First Bloom ${yearText} Using NCEP Data`],
     // spring index current year
     [`si-x:arnoldred_leaf_ncep`, `Arnold Red Honeysuckle First Leaf Through ${dateText} Using NCEP Data`],
     [`si-x:zabelli_leaf_ncep`, `Zabelii First Leaf Through ${dateText} Using NCEP Data`],

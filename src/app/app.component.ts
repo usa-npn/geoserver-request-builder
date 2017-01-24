@@ -109,7 +109,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             this.selectedDate = now.toISOString().slice(0, 10);
             this.yearlyTimeStep = false;
         }
-        if (layer.name.includes('ncep_historic')) {
+        if (layer.name.includes('ncep_historic') || layer.name.includes('anomaly_historic')) {
             this.selectedDoy = null;
             this.selectedDate = '2016-01-01';
             this.selectedYear = 2016;
@@ -162,7 +162,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (!this.selectedLayer) {
           return 'Select a layer to view its dimension range.';
         }
-        if (this.selectedLayer.name.includes('ncep_historic')) {
+        if (this.selectedLayer.name.includes('ncep_historic') || this.selectedLayer.name.includes('anomaly_historic')) {
             this.minDate = '2016-01-01';
             this.maxDate = (rightNow.getFullYear() - 1).toString() + '-01-01';
             return '2016-01-01 Through ' + (rightNow.getFullYear() - 1).toString() + '-01-01';
