@@ -4,6 +4,8 @@ export function getCaption(layerName, dateText, yearText, doyText) {
     // climate data
     [`climate:tmin`, `Minimum Temperatures in Celsius on ${dateText} Using NCEP Data`],
     [`climate:tmax`, `Maximum Temperatures in Celsius on ${dateText} Using NCEP Data`],
+    [`climate:tmin_alaska`, `Minimum Temperatures in Celsius on ${dateText} Using NCEP Data`],
+    [`climate:tmax_alaska`, `Maximum Temperatures in Celsius on ${dateText} Using NCEP Data`],
     // agdd anomaly
     [`gdd:agdd_anomaly_50f`, `Accumulated Growing Degree Day Anomaly 50F Base Temp Through ${dateText} Using NCEP and PRISM Data`],
     [`gdd:agdd_anomaly`, `Accumulated Growing Degree Day Anomaly 32F Base Temp Through ${dateText} Using NCEP and PRISM Data`],

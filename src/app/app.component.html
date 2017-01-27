@@ -19,8 +19,8 @@
           <div class="row">
             <div class="col-md-4">
               <div class="btn-group" role="group" aria-label="...">
-                <button type="button" class="btn btn-default" [class.active]="isSelected('wms')" (click)="setService('wms')">WMS</button>
-                <button type="button" class="btn btn-default" [class.active]="isSelected('wcs')" (click)="setService('wcs')">WCS</button>
+                <button id="wms-button" type="button" class="btn btn-default" [class.active]="isSelected('wms')" (click)="setService('wms')">WMS</button>
+                <button id="wcs-button" type="button" class="btn btn-default" [class.active]="isSelected('wcs')" (click)="setService('wcs')">WCS</button>
               </div>
             </div>
             <br>
@@ -43,11 +43,11 @@
           <div class="row">
             <div class="col-md-8">
               <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <button class="btn btn-default dropdown-toggle" type="button" id="layersDropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                   {{getSelectedLayer()}}
                   <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-short" aria-labelledby="dropdownMenu1">
+                <ul class="dropdown-menu dropdown-menu-short" aria-labelledby="layersDropdownMenu">
                   <li *ngFor="let layer of _geoserverService.wmsLayers" (click)="setSelectedLayer(layer)"><a href="javascript:;">{{layer.title}}</a></li>
                 </ul>
               </div>
@@ -204,6 +204,23 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-short" aria-labelledby="wmsFormatdropdownMenu">
               <li *ngFor="let format of getFormats()" (click)="setSelectedFormat(format)"><a href="javascript:;">{{format.name}}</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default" [class.hide]="!isSelected('wms')">
+        <div class="panel-heading">
+          <h3 class="panel-title">Projection</h3>
+        </div>
+        <div class="panel-body">
+          <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="ProjectiondropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              {{getSelectedProjection()}}
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-short" aria-labelledby="wmsFormatdropdownMenu">
+              <li *ngFor="let projection of getProjections()" (click)="setSelectedProjection(projection)"><a href="javascript:;">{{projection.name}}</a></li>
             </ul>
           </div>
         </div>

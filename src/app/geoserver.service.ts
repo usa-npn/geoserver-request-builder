@@ -61,15 +61,16 @@ export class GeoserverService {
                 for (let bbox of layer.BoundingBox) {
                   if (bbox['$'] && bbox['$']['CRS'] === 'EPSG:4269') {
                       crs = bbox['$']['CRS'];
-                      maxx = bbox['$']['maxx'];
-                      maxy = bbox['$']['maxy'];
-                      minx = bbox['$']['minx'];
-                      miny = bbox['$']['miny'];
+                      maxx = Number(bbox['$']['maxx']);
+                      maxy = Number(bbox['$']['maxy']);
+                      minx = Number(bbox['$']['minx']);
+                      miny = Number(bbox['$']['miny']);
                   }
                 }
                 let metaData = null;
-                if (layer.MetadataURL)
-                    metaData = layer.MetadataURL[0]['OnlineResource'][0]['$']['xlink:href'];
+                if (layer.MetadataURL) {
+                  metaData = layer.MetadataURL[0]['OnlineResource'][0]['$']['xlink:href'];
+                }
                 layers.push({
                     workspace: layer.Name[0].split(':')[0],
                     name: layer.Name[0],
@@ -91,11 +92,17 @@ export class GeoserverService {
           }
           // console.log(layers);
           that.wmsLayers = layers.sort(function(a: GeoserverLayer, b: GeoserverLayer) {
-              if (a.workspace < b.workspace) return -1;
-              if (a.workspace > b.workspace) return 1;
-              if (a.title < b.title) return -1;
-              if (a.title > b.title) return 1;
-              return 0;
+              if (a.workspace < b.workspace) {
+                return -1;
+              } else if (a.workspace > b.workspace) {
+                return 1;
+              } else if (a.title < b.title) {
+                return -1;
+              } else if (a.title > b.title) {
+                return 1;
+              } else {
+                return 0;
+              }
           });
           // that.wmsLayers = layers;
         });
