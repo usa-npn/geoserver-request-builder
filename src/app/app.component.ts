@@ -190,6 +190,17 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.setExtent(-179.948909, -125.97851777, 50.20503422, 72.665162);
           this.setWidthAndHeight(1600, 800);
         }
+      } else if (this.selectedLayer.name.includes('best')) {
+        if (projection.epsg === '3857') {
+          this.setExtent(-20500000, 3500000, -200000, 19000000);
+          this.setWidthAndHeight(1000, 800);
+        } else if (projection.epsg === '2163') {
+          this.setExtent(-6000000, 9100000, -4800000, 5000000);
+          this.setWidthAndHeight(1300, 800);
+        } else {
+          this.setExtent(-180.0, 0.0, 0.0, 90.0);
+          this.setWidthAndHeight(1600, 800);
+        }
       } else {
         if (projection.epsg === '3857') {
           this.setExtent(-14000000, -7000000, 2700000, 6450000);
@@ -305,8 +316,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (this.isSelected('wms')) {
       if (this.selectedLayer) {
         url = url.concat(`wms?service=WMS&request=GetMap`);
-        url = url.concat(`&bbox=${this.selectedLayer.miny},
-                                ${this.selectedLayer.minx},${this.selectedLayer.maxy},${this.selectedLayer.maxx}`);
+        url = url.concat(`&bbox=${this.selectedLayer.miny},${this.selectedLayer.minx},${this.selectedLayer.maxy},${this.selectedLayer.maxx}`);
         url = url.concat(`&srs=${this.selectedLayer.crs}`);
         url = url.concat('&layers=' + this.selectedLayer.name);
         if (this.stateBorders) {
@@ -322,8 +332,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           url = url.concat('&format_options=layout:provisional_no_ramp');
         }
         if (getCaption(this.selectedLayer.name, this.selectedDate, this.selectedYear, this.selectedDoy) !== '') {
-          url = url.concat(`&env=the_caption:
-            ${getCaption(this.selectedLayer.name, this.selectedDate, this.selectedYear, this.selectedDoy)}`);
+          url = url.concat(`&env=the_caption:${getCaption(this.selectedLayer.name, this.selectedDate, this.selectedYear, this.selectedDoy)}`);
         }
       }
       if (this.urlWidth) {
