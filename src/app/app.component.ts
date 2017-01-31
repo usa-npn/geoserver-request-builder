@@ -5,6 +5,7 @@ import { GeoserverFormat } from './geoserver-format';
 import { projections, Projection } from './projection';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { getCaption } from './captions';
+import * as proj4 from 'proj4';
 
 
 declare const require: any;
@@ -304,6 +305,23 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
+  projectCoord(lat: number, long: number) {
+    proj4.defs([
+      [
+        'EPSG:4326',
+        '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees'],
+      [
+        'EPSG:4269',
+        '+title=NAD83 (long/lat) +proj=longlat +a=6378137.0 +b=6356752.31414036 +ellps=GRS80 +datum=NAD83 +units=degrees'
+      ],
+      [
+        'EPSG:2163',
+        '+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs '
+      ]
+    ]);
+    return proj4('EPSG:4269', `EPSG:${this.selectedProjection.epsg}`, [ lat, long ]);
+  }
+
   getGeoserverUrl(): string {
     let url = '';
     if (location.hostname.includes('local')) {
@@ -316,8 +334,17 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (this.isSelected('wms')) {
       if (this.selectedLayer) {
         url = url.concat(`wms?service=WMS&request=GetMap`);
+        // for now we are hard coding extents for different projections, come back to this though
+        // the issue with dynamically reprojecting the extents is mostly the color ramp covers up parts of the map
+        // also sometimes the extent looked off
+        // const mins = this.projectCoord(this.selectedLayer.miny, this.selectedLayer.minx);
+        // const maxs = this.projectCoord(this.selectedLayer.maxy, this.selectedLayer.maxx);
+        // url = url.concat(`&bbox=${mins},${maxs}`);
+        // url = url.concat(`&srs=EPSG:${this.selectedProjection.epsg}`);
+
         url = url.concat(`&bbox=${this.selectedLayer.miny},${this.selectedLayer.minx},${this.selectedLayer.maxy},${this.selectedLayer.maxx}`);
         url = url.concat(`&srs=${this.selectedLayer.crs}`);
+
         url = url.concat('&layers=' + this.selectedLayer.name);
         if (this.stateBorders) {
           url = url.concat(',' + this.selectedLayer.workspace + ':states');
