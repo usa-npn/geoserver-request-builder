@@ -220,7 +220,7 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-short" aria-labelledby="wmsFormatdropdownMenu">
-              <li *ngFor="let projection of getProjections()" (click)="setSelectedProjection(projection)"><a href="javascript:;">{{projection.name}}</a></li>
+              <li *ngFor="let projection of getProjections() | projectionPipe:showAlaskaProjection" (click)="setSelectedProjection(projection)"><a href="javascript:;">{{projection.name}}</a></li>
             </ul>
           </div>
         </div>

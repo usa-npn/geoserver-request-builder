@@ -40,6 +40,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   validationErrorModalBody: String;
   yearlyTimeStep: boolean = false;
   projections = projections;
+  showAlaskaProjection = false;
 
   @ViewChild('validationErrorModal')
   validationErrorModal: ModalComponent;
@@ -82,9 +83,12 @@ export class AppComponent implements OnInit, AfterViewInit {
       return 'Select a Layer';
     }
   }
-
   setSelectedLayer(layer: GeoserverLayer): void {
     const now: any = new Date();
+    this.showAlaskaProjection = false;
+    if (layer.name.includes('alaska')) {
+      this.showAlaskaProjection = true;
+    }
     if (layer.dimensionRange.includes('1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,')) {
       const start: any = new Date(now.getFullYear(), 0, 0);
       const diff: any = now - start;
@@ -120,6 +124,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.setYears(2016, this.previousYear);
     }
     this.selectedLayer = layer;
+    this.initializeSelectedProjection('4269');
     this.setSelectedProjection(this.selectedProjection);
   }
 
@@ -187,6 +192,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         } else if (projection.epsg === '2163') {
           this.setExtent(-4380000, -1000000, 1200000, 4350000);
           this.setWidthAndHeight(900, 800);
+        } else if (projection.epsg === '5936') {
+          this.setExtent(-200000, 3800000, -2300000, 70000);
+          this.setWidthAndHeight(1200, 700);
         } else {
           this.setExtent(-179.948909, -125.97851777, 50.20503422, 72.665162);
           this.setWidthAndHeight(1600, 800);

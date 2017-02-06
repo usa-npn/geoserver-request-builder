@@ -8,9 +8,10 @@ import { FormsModule } from '@angular/forms';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import {ProjectionPipe} from './projection.pipe';
 
 @NgModule({
-    declarations: [AppComponent, DatePicker],
+    declarations: [AppComponent, DatePicker, ProjectionPipe],
     imports:      [BrowserModule, HttpModule, FormsModule, Ng2Bs3ModalModule ],
     bootstrap:    [AppComponent],
     providers: [GeoserverService]
