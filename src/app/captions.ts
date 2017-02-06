@@ -15,6 +15,8 @@ export function getCaption(layerName, dateText, yearText, doyText) {
     // agdd ncep
     [`gdd:agdd`, `Accumulated Growing Degree Days 32F Base Temp Through ${dateText} Using NCEP Data`],
     [`gdd:agdd_50f`, `Accumulated Growing Degree Days 50F Base Temp Through ${dateText} Using NCEP Data`],
+    [`gdd:agdd_alaska`, `Accumulated Growing Degree Days 32F Base Temp Through ${dateText} Using NCEP Data`],
+    [`gdd:agdd_alaska_50f`, `Accumulated Growing Degree Days 50F Base Temp Through ${dateText} Using NCEP Data`],
     // agdd prism
     [`gdd:agdd_prism`, `PRISM Accumulated Growing Degree Days 32F Base Temp Through ${dateText} Using PRISM Data`],
     // spring index historic ncep
