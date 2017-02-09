@@ -333,9 +333,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   getGeoserverUrl(): string {
     let url = '';
     if (location.hostname.includes('local')) {
-      url = 'https://geoserver-dev.usanpn.org/geoserver/';
+      url = 'http://geoserver-dev.usanpn.org/geoserver/';
     } else if (location.hostname.includes('dev')) {
-      url = 'https://geoserver-dev.usanpn.org/geoserver/';
+      url = 'http://geoserver-dev.usanpn.org/geoserver/';
     } else {
       url = 'https://geoserver.usanpn.org/geoserver/';
     }
