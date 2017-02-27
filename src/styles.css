@@ -58,14 +58,14 @@ button:focus {outline:0;}
 }
 
 .dropdown-menu-short {
-  width: 500px;
+  width: 100%;
   height: auto;
   max-height: 200px;
   overflow-x: hidden;
 }
 
 .dropdown-toggle {
-  width: 500px;
+  width: 100%;
 }
 
 .panel-primary > .panel-heading > .panel-title {
@@ -104,4 +104,3 @@ body {
     text-align: right;
     font-weight: bold;
 }
-

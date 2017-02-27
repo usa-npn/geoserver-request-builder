@@ -26,7 +26,7 @@ npm install
 ```
 The command installs all dependencies listed in the package.json file into a folder called node_modules.
 
-[Webpack](https://webpack.github.io/) is used to build and bundle the project.
+This project takes advantage of the [angular cli](https://cli.angular.io/) which uses webpack to build and bundle the project. An npm build script is setup to trigger this process.
 
 ```
 cd geoserver-request-builder
@@ -42,13 +42,7 @@ npm start
 
 ## Deployment
 
-A common deployment will look like this
-```
-cd geoserver-request-builder
-sudo git pull
-sudo npm install - this is only needed if the commit added a new npm package
-sudo npm run build
-```
+This project is automatically deployed using [TeamCity](https://www.jetbrains.com/teamcity/). The dist folder created from npm run build contains all javascript and assets needed with index.html being the application entry point.
 
 ## Related Projects
 
@@ -62,3 +56,4 @@ This repository only contains the front end used to deliver phenology maps to pu
 * **Lee Marsh** - [NPN](https://github.com/usa-npn)
 
 See also the list of [contributors](https://www.usanpn.org/about/staff) who participated in this project.
+
