@@ -28,6 +28,8 @@ export function getCaption(layerName, dateText, yearText, doyText) {
     [`si-x:lilac_bloom_ncep_historic`, `Lilac First Bloom ${yearText} Using NCEP Data`],
     [`si-x:average_leaf_ncep_historic`, `Spring Index First Leaf ${yearText} Using NCEP Data`],
     [`si-x:average_bloom_ncep_historic`, `Spring Index First Bloom ${yearText} Using NCEP Data`],
+    [`si-x:leaf_anomaly_historic`, `Spring Index First Leaf Anomaly ${yearText} Using NCEP and PRISM Data`],
+    [`si-x:bloom_anomaly_historic`, `Spring Index First Bloom Anomaly ${yearText} Using NCEP and PRISM Data`],
     // spring index current year
     [`si-x:arnoldred_leaf_ncep`, `Arnold Red Honeysuckle First Leaf Through ${dateText} Using NCEP Data`],
     [`si-x:zabelli_leaf_ncep`, `Zabelii First Leaf Through ${dateText} Using NCEP Data`],
