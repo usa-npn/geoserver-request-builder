@@ -362,9 +362,17 @@ export class AppComponent implements OnInit, AfterViewInit {
           url = url.concat('&styles=' + style + ',');
         }
         if (this.showColorRamp) {
-          url = url.concat('&format_options=layout:provisional');
+          if (this.selectedLayer.description.toLowerCase().includes('provisional')) {
+            url = url.concat('&format_options=layout:provisional');
+          } else {
+            url = url.concat('&format_options=layout:reviewed');
+          }
         } else {
-          url = url.concat('&format_options=layout:provisional_no_ramp');
+          if (this.selectedLayer.description.toLowerCase().includes('provisional')) {
+            url = url.concat('&format_options=layout:provisional_no_ramp');
+          } else {
+            url = url.concat('&format_options=layout:reviewed_no_ramp');
+          }
         }
         if (getCaption(this.selectedLayer.name, this.selectedDate, this.selectedYear, this.selectedDoy) !== '') {
           url = url.concat(`&env=the_caption:${getCaption(this.selectedLayer.name, this.selectedDate, this.selectedYear, this.selectedDoy)}`);
