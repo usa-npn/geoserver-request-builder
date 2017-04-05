@@ -45,8 +45,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('validationErrorModal')
   validationErrorModal: ModalComponent;
 
-  constructor(private _geoserverService: GeoserverService,
-              private cdr: ChangeDetectorRef) { }
+  constructor(public _geoserverService: GeoserverService,
+              public cdr: ChangeDetectorRef) { }
 
   selectedDateChange(event) {
     if (event.value && event.value.target && event.value.target.children[0]) {
