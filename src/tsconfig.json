@@ -1,6 +1,7 @@
 {
   "exclude": [ "test.ts" ],
   "compilerOptions": {
+    "noStrictGenericChecks": true,
     "baseUrl": "",
     "declaration": false,
     "emitDecoratorMetadata": true,
