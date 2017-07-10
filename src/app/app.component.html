@@ -48,7 +48,7 @@
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-short" aria-labelledby="layersDropdownMenu">
-                  <li *ngFor="let layer of _geoserverService.wmsLayers" (click)="setSelectedLayer(layer)"><a href="javascript:;">{{layer.title}}</a></li>
+                  <li *ngFor="let layer of wmsLayers" (click)="setSelectedLayer(layer)"><a href="javascript:;">{{layer.title}}</a></li>
                 </ul>
               </div>
             </div>
@@ -265,16 +265,20 @@
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                 <span class="sr-only">Error:</span>
                 The URL is incomplete: {{validationErrorModalBody}}
-              </div>
+              </div>               
             </div>
           </div>
         </div>
         <div class="panel-body">
           {{getGeoserverUrl()}}
+          <br/>
+          {{getCitationURL()}}
         </div>
       </div>
 
       <button type="button" class="btn btn-success" (click)="requestButtonPressed()">Send Request</button>
+      
+      
 
     </div>
   </div>

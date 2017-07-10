@@ -6,6 +6,8 @@ import { projections, Projection } from './projection';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { getCaption } from './captions';
 import * as proj4 from 'proj4';
+import {ActivatedRoute, Params} from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
 
 
 declare const require: any;
@@ -44,9 +46,18 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   @ViewChild('validationErrorModal')
   validationErrorModal: ModalComponent;
+  
+  public wmsLayers : GeoserverLayer[];
+  private subscriber : Subscription;
+  private defaultLayerName : string = "";
 
   constructor(public _geoserverService: GeoserverService,
-              private cdr: ChangeDetectorRef) { }
+              private cdr: ChangeDetectorRef,
+              private activatedRoute : ActivatedRoute ) {
+                
+                this.wmsLayers = [];
+              
+              }
 
   selectedDateChange(event) {
     if (event.value && event.value.target && event.value.target.children[0]) {
@@ -417,6 +428,55 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     return url;
   }
+  
+  getCitationURL(){
+      let url = location.protocol + "//" + location.host + "?";
+      
+      if(this.service){
+        url += `service=${this.service}`;
+      }
+      
+      if(this.selectedLayer){
+        url += `&layer=${this.selectedLayer.name}`;
+      }
+      
+      
+      if(this.selectedLayerHasDate()){
+          url += `&date=${this.selectedDate}`;
+      }
+      
+      if(this.selectedLayerHasYear()){
+          url += `&year=${this.selectedYear}`;
+      }
+      
+      if(this.selectedLayerHasDoy()){
+          url += `&doy=${this.selectedDoy}`;
+      }
+      
+      if(this.selectedFormat){
+        url += `&format=${this.selectedFormat.syntax}`;
+      }
+      
+      if(this.selectedProjection){
+        url += `&projection=${this.selectedProjection.epsg}`;
+      }
+      
+      if(this.service == "wms"){
+        url += `&width=${this.urlWidth}`;
+        url += `&height=${this.urlHeight}`;
+        
+        if(this.showColorRamp == true){
+            url += `&colors=1`;            
+        }
+        
+        if(this.stateBorders == true){
+            url += `&state_border=1`;
+        }
+        
+      }
+
+      return url;
+  }
 
   validateRequest(openModal): boolean {
     if (!this.isSelected('wcs') &&  !this.isSelected('wms')) {
@@ -482,12 +542,165 @@ export class AppComponent implements OnInit, AfterViewInit {
     window.open(this.getLayerColorRampUrl());
   }
 
+  
   ngOnInit() {
     this._geoserverService.initWmsLayers();
     this.initializeSelectedProjection('4269');
+          
+    this.subscriber = this._geoserverService.wmsLayers.subscribe((ourLayers : GeoserverLayer[]) => {
+        
+        
+        this.activatedRoute.queryParams.subscribe((params: Params) => {
+
+            let service = params['service'];        
+            if(service && (service == 'wms' || service == 'wcs') ){
+                this.service = service;
+            }
+
+            let layerName = params['layer'];
+            if(layerName){
+                this.defaultLayerName = layerName;
+            }
+            
+            if(service == "wms"){
+                let stateBorder = params['state_border'];
+                if(stateBorder && stateBorder == 1){
+                    this.stateBorders = true;
+                }
+                
+                let colors = params['colors'];
+                if(colors && colors == 1){
+                    this.showColorRamp = true;
+                }else if(colors && colors != 1){
+                    this.showColorRamp = false;
+                }
+                
+                let width = params['width'];
+                let height = params['height'];
+
+                if(width && height){
+                    this.urlWidth = parseInt(width,0);
+                    this.urlHeight = parseInt(height,0);
+                }                
+                
+                
+            }
+            
+            let format = params['format'];
+            if(format){
+                let arr = null;
+                if(service == "wms"){
+                    arr = this._geoserverService.wmsFormats;
+                }else if(service == "wcs"){
+                    arr = this._geoserverService.wcsFormats;
+                }
+                
+                if(arr){
+                    arr.forEach((formatType : any) => {
+
+                       if(formatType.syntax == format){
+                           this.setSelectedFormat(formatType)
+                       }
+                       
+                    });
+                }                
+            }
+            
+            let proj = params['projection'];
+            if(proj){
+                let proj_arr = ['4269','3857','2163','5936'];
+
+                if(proj_arr.indexOf(proj) > -1){
+                    this.initializeSelectedProjection(proj);
+                }
+                
+            }
+            
+
+            
+            
+            /**
+             * We collect the date/year/doy variable here and set it
+             * but it must be set again later after the layer is set
+             * because the layer setting function has some logic that
+             * sets the apporpirate date field.
+             */
+            let date = params['date'];
+            if(date){
+                this.selectedDate = date;
+            }
+            
+            let doy = params['doy'];
+            if(doy){
+                this.selectedDoy = doy;
+            }
+            
+            let year = params['year'];
+            if(year){
+                this.selectedYear = year;
+            }
+            
+
+
+
+          });          
+        
+        
+   
+        
+        ourLayers.forEach((someLayer) => {
+            if(someLayer.name == this.defaultLayerName){
+                
+                /**
+                 * Once we find the layer to initialize the tool with, then 
+                 * determine if any of the date type fields were set when the
+                 * GET variables were collected. If they are, preserve that value
+                 * and then reset it after the layer is set, because setting the
+                 * layer has some logic which configures the date.
+                 */
+                let date = this.selectedDate;
+                let doy = this.selectedDoy;
+                let year = this.selectedYear
+                
+                let projection = this.selectedProjection;
+
+                someLayer.selected = true;
+                this.setSelectedLayer(someLayer);
+                
+                if(date && this.selectedLayerHasDate()){
+                    this.selectedDate = date;
+                }
+                
+                if(doy && this.selectedLayerHasDoy()){
+                    this.selectedDoy = doy;
+                }
+                
+                if(year && this.selectedLayerHasYear()){
+                    this.selectedYear = year;
+                }
+                
+                if(projection){
+                    this.selectedProjection = projection;
+                }
+
+            }
+
+        });
+                
+        this.wmsLayers = ourLayers;
+    });
+
+    
+
+
+    
   }
 
   ngAfterViewInit() {
     this.cdr.detectChanges();
+  }
+  
+  ngOnDestroy(){
+      this.subscriber.unsubscribe();
   }
 }
