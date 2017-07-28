@@ -29,6 +29,10 @@ button {
     width: 100%;
 }
 
+.btn-execute {
+    width: 49%;
+}
+
 .show {
   display: block;
   visibility: visible;
@@ -103,4 +107,8 @@ body {
     margin: 0px;
     text-align: right;
     font-weight: bold;
+}
+
+.download-modal{
+    width:850px;
 }

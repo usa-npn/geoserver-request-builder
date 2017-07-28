@@ -271,12 +271,11 @@
         </div>
         <div class="panel-body">
           {{getGeoserverUrl()}}
-          <br/>
-          {{getCitationURL()}}
         </div>
       </div>
 
-      <button type="button" class="btn btn-success" (click)="requestButtonPressed()">Send Request</button>
+      <button type="button" class="btn btn-success btn-execute" (click)="requestButtonPressed()">Get Data</button>
+      <button type="button" class="btn btn-success btn-execute" (click)="downloadButtonPressed()">Get Data and Citation</button>
       
       
 
@@ -294,4 +293,21 @@
   <modal-footer>
     <button type="button" class="btn btn-default" (click)="validationErrorModal.close();">Close</button>
   </modal-footer>
+</modal>
+
+
+
+<modal #downloadModal>
+    <modal-header>
+        <h1 class="modal-title" [class.hide]="getDownloadStatus() != 'downloading'"><i class="fa fa-refresh fa-spin" style="font-size:30px"></i>  Downloading</h1>
+    </modal-header>
+    <modal-body>
+        <div class="container download-modal">
+        <div class="jumbotron">
+            
+            <p>Please wait. The data you requested is being processed and will be ready for download in a moment.</p>
+            
+        </div>
+        </div>
+    </modal-body>
 </modal>

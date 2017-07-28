@@ -8,6 +8,7 @@ import { getCaption } from './captions';
 import * as proj4 from 'proj4';
 import {ActivatedRoute, Params} from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import {Http, Response, Headers} from '@angular/http';
 
 
 declare const require: any;
@@ -43,9 +44,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   yearlyTimeStep: boolean = false;
   projections = projections;
   showAlaskaProjection = false;
+  downloadStatus : string = "inactive";
 
   @ViewChild('validationErrorModal')
   validationErrorModal: ModalComponent;
+  
+  @ViewChild('downloadModal')
+  downloadModal: ModalComponent;  
   
   public wmsLayers : GeoserverLayer[];
   private subscriber : Subscription;
@@ -53,7 +58,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(public _geoserverService: GeoserverService,
               private cdr: ChangeDetectorRef,
-              private activatedRoute : ActivatedRoute ) {
+              private activatedRoute : ActivatedRoute,
+              private http: Http ) {
                 
                 this.wmsLayers = [];
               
@@ -429,6 +435,45 @@ export class AppComponent implements OnInit, AfterViewInit {
     return url;
   }
   
+  getLayerTitle(){
+      let str = this.selectedLayer.title;
+      
+      if(this.selectedLayerHasDate() && this.selectedLayer.title.indexOf("Accumulations") > -1){
+          str += " as of " + this.selectedDate;
+      }
+      
+      if(this.selectedLayerHasDate() && this.selectedLayer.title.indexOf("Accumulations") == -1){
+          str += " Date " + this.selectedDate;
+      }
+      
+      if(this.selectedLayerHasYear()){
+          str += ", Year: " + this.selectedYear;
+      }
+      
+      if(this.selectedLayerHasDoy()){
+          str += ", DOY: " + this.selectedDoy;
+      }
+      
+      return str; 
+      
+  }
+  
+  getRegionExtent(){
+      return this.selectedLayer.maxx + "," + this.selectedLayer.maxy + "," + this.selectedLayer.minx + "," + this.selectedLayer.miny;
+  }
+  
+  getDOI(){
+      let baseDOI = "http://dx.doi.org/10.5066/";
+      
+      if(this.selectedLayer.title.indexOf("Spring") > -1){
+          baseDOI += "F7XD0ZRK";
+      }else{
+          baseDOI += "F7SN0723";
+      }
+      
+      return baseDOI;
+  }
+  
   getCitationURL(){
       let url = location.protocol + "//" + location.host + "?";
       
@@ -471,10 +516,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         
         if(this.stateBorders == true){
             url += `&state_border=1`;
-        }
-        
+        }        
       }
-
+      
       return url;
   }
 
@@ -531,6 +575,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       window.open(this.getGeoserverUrl());
     }
   }
+  
 
   metadataButtonPressed(): void {
     if (this.selectedLayer && this.selectedLayer.metadataUrl) {
@@ -541,6 +586,55 @@ export class AppComponent implements OnInit, AfterViewInit {
   colorrampButtonPressed(): void {
     window.open(this.getLayerColorRampUrl());
   }
+  
+  getDownloadStatus(){
+      return this.downloadStatus;      
+  }
+  
+  
+  downloadButtonPressed(): void {
+    if (this.validateRequest(true)) {
+//      window.open(this.getGeoserverUrl());
+        
+        
+        var headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        
+        var data = JSON.stringify({
+          citation_url: this.getCitationURL(),
+          layer_title: this.getLayerTitle(),
+          range: this.getRegionExtent(),
+          doi: this.getDOI(),
+          mime: this.selectedFormat.syntax,
+          metadata_url: this.selectedLayer.metadataUrl,
+          resource_url: this.getGeoserverUrl()
+        });        
+        
+        this.downloadStatus='downloading';
+        this.downloadModal.backdrop = 'static';
+        this.downloadModal.keyboard = false;
+        this.downloadModal.size = 'lg';
+        this.downloadModal.open();
+        
+        let popURL = 'http://localhost:3002/grb/package';
+        this.http.post(popURL, data, { headers: headers })
+                // .replace("http://data-dev", "https://data-dev") 
+                // .replace("http://data.usanpn", "https://data.usanpn") + this.config.getPopDownloadEndpoint(), data, { headers: headers })
+            .subscribe((res:Response) => {
+                console.log(res.json());
+                this.downloadStatus = 'inactive';
+              if(res.json().download_path === "error") {
+                  this.downloadStatus = 'inactive';
+              }
+              else {
+                window.location.assign(res.json().download_path);
+                this.downloadStatus = 'inactive';
+                this.downloadModal.close();
+              }
+            });          
+    }
+  }  
+  
 
   
   ngOnInit() {
