@@ -616,7 +616,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.downloadModal.size = 'lg';
         this.downloadModal.open();
         
-        let popServerUrl = 'http';
+        let popServerUrl = 'http:';
         if(location.hostname.includes('local')) {
             popServerUrl += '//' + location.hostname;
         }
