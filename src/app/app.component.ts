@@ -616,8 +616,19 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.downloadModal.size = 'lg';
         this.downloadModal.open();
         
-        let popURL = 'http://localhost:3002/grb/package';
-        this.http.post(popURL, data, { headers: headers })
+        let popServerUrl = 'http';
+        if(location.hostname.includes('local')) {
+            popServerUrl += '//' + location.hostname;
+        }
+        else if(location.hostname.includes('dev')) {
+            popServerUrl += '//data-dev.usanpn.org';
+        }
+        else {
+            popServerUrl += '//data.usanpn.org';
+        }
+        
+        //let popURL = 'http://localhost:3002/grb/package';
+        this.http.post(popServerUrl + ":3002/grb/package", data, { headers: headers })
                 // .replace("http://data-dev", "https://data-dev") 
                 // .replace("http://data.usanpn", "https://data.usanpn") + this.config.getPopDownloadEndpoint(), data, { headers: headers })
             .subscribe((res:Response) => {
