@@ -475,7 +475,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   
   getCitationURL(){
-      let url = location.protocol + "//" + location.host + "?";
+      let url = location.protocol + "//" + location.host;
+      
+      if(location.host != "localhost"){
+          url += "/geoserver-request-builder";
+      }
+      
+      url += "?";
       
       if(this.service){
         url += `service=${this.service}`;
