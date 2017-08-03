@@ -48,7 +48,7 @@
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-short" aria-labelledby="layersDropdownMenu">
-                  <li *ngFor="let layer of _geoserverService.wmsLayers" (click)="setSelectedLayer(layer)"><a href="javascript:;">{{layer.title}}</a></li>
+                  <li *ngFor="let layer of wmsLayers" (click)="setSelectedLayer(layer)"><a href="javascript:;">{{layer.title}}</a></li>
                 </ul>
               </div>
             </div>
@@ -265,7 +265,7 @@
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                 <span class="sr-only">Error:</span>
                 The URL is incomplete: {{validationErrorModalBody}}
-              </div>
+              </div>               
             </div>
           </div>
         </div>
@@ -274,7 +274,10 @@
         </div>
       </div>
 
-      <button type="button" class="btn btn-success" (click)="requestButtonPressed()">Send Request</button>
+      <button type="button" class="btn btn-success btn-execute" (click)="requestButtonPressed()">Get Data</button>
+      <button type="button" class="btn btn-success btn-execute" (click)="downloadButtonPressed()">Get Data with Metadata and Citation</button>
+      
+      
 
     </div>
   </div>
@@ -290,4 +293,21 @@
   <modal-footer>
     <button type="button" class="btn btn-default" (click)="validationErrorModal.close();">Close</button>
   </modal-footer>
+</modal>
+
+
+
+<modal #downloadModal>
+    <modal-header>
+        <h1 class="modal-title" [class.hide]="getDownloadStatus() != 'downloading'"><i class="fa fa-refresh fa-spin" style="font-size:30px"></i>  Downloading</h1>
+    </modal-header>
+    <modal-body>
+        <div class="container download-modal">
+        <div class="jumbotron">
+            
+            <p>Please wait. The data you requested is being processed and will be ready for download in a moment.</p>
+            
+        </div>
+        </div>
+    </modal-body>
 </modal>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { GeoserverLayer } from './geoserver-layer';
 import { GeoserverFormat } from './geoserver-format';
 
@@ -9,7 +10,7 @@ declare function require(name: string);
 @Injectable()
 export class GeoserverService {
   parseString = require('xml2js').parseString;
-  public wmsLayers: GeoserverLayer[];
+  public wmsLayers: BehaviorSubject<GeoserverLayer[]> = new BehaviorSubject<GeoserverLayer[]>([]);
   errorMessage: string;
 
   public wmsFormats: GeoserverFormat[] = [
@@ -91,7 +92,7 @@ export class GeoserverService {
             }
           }
           // console.log(layers);
-          that.wmsLayers = layers.sort(function(a: GeoserverLayer, b: GeoserverLayer) {
+          that.wmsLayers.next(layers.sort(function(a: GeoserverLayer, b: GeoserverLayer) {
               if (a.workspace < b.workspace) {
                 return -1;
               } else if (a.workspace > b.workspace) {
@@ -103,7 +104,8 @@ export class GeoserverService {
               } else {
                 return 0;
               }
-          });
+          }));
+
           // that.wmsLayers = layers;
         });
       },

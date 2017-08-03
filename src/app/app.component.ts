@@ -6,6 +6,9 @@ import { projections, Projection } from './projection';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { getCaption } from './captions';
 import * as proj4 from 'proj4';
+import {ActivatedRoute, Params} from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+import {Http, Response, Headers} from '@angular/http';
 
 
 declare const require: any;
@@ -41,12 +44,26 @@ export class AppComponent implements OnInit, AfterViewInit {
   yearlyTimeStep: boolean = false;
   projections = projections;
   showAlaskaProjection = false;
+  downloadStatus : string = "inactive";
 
   @ViewChild('validationErrorModal')
   validationErrorModal: ModalComponent;
+  
+  @ViewChild('downloadModal')
+  downloadModal: ModalComponent;  
+  
+  public wmsLayers : GeoserverLayer[];
+  private subscriber : Subscription;
+  private defaultLayerName : string = "";
 
   constructor(public _geoserverService: GeoserverService,
-              public cdr: ChangeDetectorRef) { }
+              private cdr: ChangeDetectorRef,
+              private activatedRoute : ActivatedRoute,
+              private http: Http ) {
+                
+                this.wmsLayers = [];
+              
+              }
 
   selectedDateChange(event) {
     if (event.value && event.value.target && event.value.target.children[0]) {
@@ -313,22 +330,22 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  projectCoord(lat: number, long: number) {
-    proj4.defs([
-      [
-        'EPSG:4326',
-        '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees'],
-      [
-        'EPSG:4269',
-        '+title=NAD83 (long/lat) +proj=longlat +a=6378137.0 +b=6356752.31414036 +ellps=GRS80 +datum=NAD83 +units=degrees'
-      ],
-      [
-        'EPSG:2163',
-        '+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs '
-      ]
-    ]);
-    return proj4('EPSG:4269', `EPSG:${this.selectedProjection.epsg}`, [ lat, long ]);
-  }
+  // projectCoord(lat: number, long: number) {
+  //   proj4.defs([
+  //     [
+  //       'EPSG:4326',
+  //       '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees'],
+  //     [
+  //       'EPSG:4269',
+  //       '+title=NAD83 (long/lat) +proj=longlat +a=6378137.0 +b=6356752.31414036 +ellps=GRS80 +datum=NAD83 +units=degrees'
+  //     ],
+  //     [
+  //       'EPSG:2163',
+  //       '+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs '
+  //     ]
+  //   ]);
+  //   return proj4('EPSG:4269', `EPSG:${this.selectedProjection.epsg}`, [ lat, long ]);
+  // }
 
   getGeoserverUrl(): string {
     let url = '';
@@ -417,6 +434,99 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     return url;
   }
+  
+  getLayerTitle(){
+      let str = this.selectedLayer.title;
+      
+      if(this.selectedLayerHasDate() && this.selectedLayer.title.indexOf("Accumulations") > -1){
+          str += " as of " + this.selectedDate;
+      }
+      
+      if(this.selectedLayerHasDate() && this.selectedLayer.title.indexOf("Accumulations") == -1){
+          str += " Date " + this.selectedDate;
+      }
+      
+      if(this.selectedLayerHasYear()){
+          str += ", Year: " + this.selectedYear;
+      }
+      
+      if(this.selectedLayerHasDoy()){
+          str += ", DOY: " + this.selectedDoy;
+      }
+      
+      return str; 
+      
+  }
+  
+  getRegionExtent(){
+      return this.selectedLayer.maxx + "," + this.selectedLayer.maxy + "," + this.selectedLayer.minx + "," + this.selectedLayer.miny;
+  }
+  
+  getDOI(){
+      let baseDOI = "http://dx.doi.org/10.5066/";
+      
+      if(this.selectedLayer.title.indexOf("Spring") > -1){
+          baseDOI += "F7XD0ZRK";
+      }else{
+          baseDOI += "F7SN0723";
+      }
+      
+      return baseDOI;
+  }
+  
+  getCitationURL(){
+      let url = location.protocol + "//" + location.host;
+      
+      if(location.host != "localhost"){
+          url += "/geoserver-request-builder";
+      }
+      
+      url += "?";
+      
+      if(this.service){
+        url += `service=${this.service}`;
+      }
+      
+      if(this.selectedLayer){
+        url += `&layer=${this.selectedLayer.name}`;
+      }
+      
+      
+      if(this.selectedLayerHasDate()){
+          url += `&date=${this.selectedDate}`;
+      }
+      
+      if(this.selectedLayerHasYear()){
+          url += `&year=${this.selectedYear}`;
+      }
+      
+      if(this.selectedLayerHasDoy()){
+          url += `&doy=${this.selectedDoy}`;
+      }
+      
+      if(this.selectedFormat){
+        url += `&format=${this.selectedFormat.syntax}`;
+      }
+      
+      if(this.selectedProjection){
+        url += `&projection=${this.selectedProjection.epsg}`;
+      }
+      
+      if(this.service == "wms"){
+        url += `&width=${this.urlWidth}`;
+        url += `&height=${this.urlHeight}`;
+        
+        if(this.showColorRamp == true){
+            url += `&colors=1`;            
+        }
+        
+        if(this.stateBorders == true){
+            url += `&state_border=1`;
+        }        
+      }
+      
+      return url;
+  }
 
   validateRequest(openModal): boolean {
     if (!this.isSelected('wcs') &&  !this.isSelected('wms')) {
@@ -471,6 +581,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       window.open(this.getGeoserverUrl());
     }
   }
+  
 
   metadataButtonPressed(): void {
     if (this.selectedLayer && this.selectedLayer.metadataUrl) {
@@ -481,13 +592,226 @@ export class AppComponent implements OnInit, AfterViewInit {
   colorrampButtonPressed(): void {
     window.open(this.getLayerColorRampUrl());
   }
+  
+  getDownloadStatus(){
+      return this.downloadStatus;      
+  }
+  
+  
+  downloadButtonPressed(): void {
+    if (this.validateRequest(true)) {
+//      window.open(this.getGeoserverUrl());
+        
+        
+        var headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        
+        var data = JSON.stringify({
+          citation_url: this.getCitationURL(),
+          layer_title: this.getLayerTitle(),
+          range: this.getRegionExtent(),
+          doi: this.getDOI(),
+          mime: this.selectedFormat.syntax,
+          metadata_url: this.selectedLayer.metadataUrl,
+          resource_url: this.getGeoserverUrl()
+        });        
+        
+        this.downloadStatus='downloading';
+        this.downloadModal.backdrop = 'static';
+        this.downloadModal.keyboard = false;
+        this.downloadModal.size = 'lg';
+        this.downloadModal.open();
+        
+        let popServerUrl = 'http:';
+        if(location.hostname.includes('local')) {
+            popServerUrl += '//' + location.hostname;
+        }
+        else if(location.hostname.includes('dev')) {
+            popServerUrl += '//data-dev.usanpn.org';
+        }
+        else {
+            popServerUrl += '//data.usanpn.org';
+        }
+        
+        //let popURL = 'http://localhost:3002/grb/package';
+        this.http.post(popServerUrl + ":3002/grb/package", data, { headers: headers })
+                // .replace("http://data-dev", "https://data-dev") 
+                // .replace("http://data.usanpn", "https://data.usanpn") + this.config.getPopDownloadEndpoint(), data, { headers: headers })
+            .subscribe((res:Response) => {
+                console.log(res.json());
+                this.downloadStatus = 'inactive';
+              if(res.json().download_path === "error") {
+                  this.downloadStatus = 'inactive';
+              }
+              else {
+                window.location.assign(res.json().download_path);
+                this.downloadStatus = 'inactive';
+                this.downloadModal.close();
+              }
+            });          
+    }
+  }  
+  
 
+  
   ngOnInit() {
     this._geoserverService.initWmsLayers();
     this.initializeSelectedProjection('4269');
+          
+    this.subscriber = this._geoserverService.wmsLayers.subscribe((ourLayers : GeoserverLayer[]) => {
+        
+        
+        this.activatedRoute.queryParams.subscribe((params: Params) => {
+
+            let service = params['service'];        
+            if(service && (service == 'wms' || service == 'wcs') ){
+                this.service = service;
+            }
+
+            let layerName = params['layer'];
+            if(layerName){
+                this.defaultLayerName = layerName;
+            }
+            
+            if(service == "wms"){
+                let stateBorder = params['state_border'];
+                if(stateBorder && stateBorder == 1){
+                    this.stateBorders = true;
+                }
+                
+                let colors = params['colors'];
+                if(colors && colors == 1){
+                    this.showColorRamp = true;
+                }else if(colors && colors != 1){
+                    this.showColorRamp = false;
+                }
+                
+                let width = params['width'];
+                let height = params['height'];
+
+                if(width && height){
+                    this.urlWidth = parseInt(width,0);
+                    this.urlHeight = parseInt(height,0);
+                }                
+                
+                
+            }
+            
+            let format = params['format'];
+            if(format){
+                let arr = null;
+                if(service == "wms"){
+                    arr = this._geoserverService.wmsFormats;
+                }else if(service == "wcs"){
+                    arr = this._geoserverService.wcsFormats;
+                }
+                
+                if(arr){
+                    arr.forEach((formatType : any) => {
+
+                       if(formatType.syntax == format){
+                           this.setSelectedFormat(formatType)
+                       }
+                       
+                    });
+                }                
+            }
+            
+            let proj = params['projection'];
+            if(proj){
+                let proj_arr = ['4269','3857','2163','5936'];
+
+                if(proj_arr.indexOf(proj) > -1){
+                    this.initializeSelectedProjection(proj);
+                }
+                
+            }
+            
+
+            
+            
+            /**
+             * We collect the date/year/doy variable here and set it
+             * but it must be set again later after the layer is set
+             * because the layer setting function has some logic that
+             * sets the apporpirate date field.
+             */
+            let date = params['date'];
+            if(date){
+                this.selectedDate = date;
+            }
+            
+            let doy = params['doy'];
+            if(doy){
+                this.selectedDoy = doy;
+            }
+            
+            let year = params['year'];
+            if(year){
+                this.selectedYear = year;
+            }
+            
+
+
+
+          });          
+        
+        
+   
+        
+        ourLayers.forEach((someLayer) => {
+            if(someLayer.name == this.defaultLayerName){
+                
+                /**
+                 * Once we find the layer to initialize the tool with, then 
+                 * determine if any of the date type fields were set when the
+                 * GET variables were collected. If they are, preserve that value
+                 * and then reset it after the layer is set, because setting the
+                 * layer has some logic which configures the date.
+                 */
+                let date = this.selectedDate;
+                let doy = this.selectedDoy;
+                let year = this.selectedYear
+                
+                let projection = this.selectedProjection;
+
+                someLayer.selected = true;
+                this.setSelectedLayer(someLayer);
+                
+                if(date && this.selectedLayerHasDate()){
+                    this.selectedDate = date;
+                }
+                
+                if(doy && this.selectedLayerHasDoy()){
+                    this.selectedDoy = doy;
+                }
+                
+                if(year && this.selectedLayerHasYear()){
+                    this.selectedYear = year;
+                }
+                
+                if(projection){
+                    this.selectedProjection = projection;
+                }
+
+            }
+
+        });
+                
+        this.wmsLayers = ourLayers;
+    });
+
+    
+
+
+    
   }
 
   ngAfterViewInit() {
     this.cdr.detectChanges();
+  }
+  
+  ngOnDestroy(){
+      this.subscriber.unsubscribe();
   }
 }
