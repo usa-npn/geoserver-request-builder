@@ -613,7 +613,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           range: this.getRegionExtent(),
           doi: this.getDOI(),
           mime: this.selectedFormat.syntax,
-          metadata_url: this.selectedLayer.metadataUrl ,
+          metadata_url: this.selectedLayer.metadataUrl.replace('http','https') ,
           resource_url: this.getGeoserverUrl()
         });
 
