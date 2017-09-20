@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs/Subscription';
 import {Http, Response, Headers} from '@angular/http';
 
 
+
 declare const require: any;
 
 @Component({
@@ -350,9 +351,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   getGeoserverUrl(): string {
     let url = '';
     if (location.hostname.includes('local')) {
-      url = 'http://geoserver-dev.usanpn.org/geoserver/';
+      url = 'https://geoserver-dev.usanpn.org/geoserver/';
     } else if (location.hostname.includes('dev')) {
-      url = 'http://geoserver-dev.usanpn.org/geoserver/';
+      url = 'https://geoserver-dev.usanpn.org/geoserver/';
     } else {
       url = 'https://geoserver.usanpn.org/geoserver/';
     }
@@ -612,7 +613,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           range: this.getRegionExtent(),
           doi: this.getDOI(),
           mime: this.selectedFormat.syntax,
-          metadata_url: this.selectedLayer.metadataUrl,
+          metadata_url: this.selectedLayer.metadataUrl.replace('http','https') ,
           resource_url: this.getGeoserverUrl()
         });        
         
@@ -622,15 +623,15 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.downloadModal.size = 'lg';
         this.downloadModal.open();
         
-        let popServerUrl = 'http:';
+        let popServerUrl = '';
         if(location.hostname.includes('local')) {
-            popServerUrl += '//' + location.hostname;
+            popServerUrl += 'http://' + location.hostname;
         }
         else if(location.hostname.includes('dev')) {
-            popServerUrl += '//data-dev.usanpn.org';
+            popServerUrl += 'https://data-dev.usanpn.org';
         }
         else {
-            popServerUrl += '//data.usanpn.org';
+            popServerUrl += 'https://data.usanpn.org';
         }
         
         //let popURL = 'http://localhost:3002/grb/package';
