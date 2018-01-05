@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs/Subscription';
 import {Http, Response, Headers} from '@angular/http';
 
 
+
 declare const require: any;
 
 @Component({
@@ -37,14 +38,14 @@ export class AppComponent implements OnInit, AfterViewInit {
   selectedDate: string;
   selectedYear: number = this.previousYear;
   selectedDoy: number;
-  stateBorders: boolean = false;
-  showColorRamp: boolean = true;
+  stateBorders = false;
+  showColorRamp = true;
   validationErrorModalTitle: String;
   validationErrorModalBody: String;
-  yearlyTimeStep: boolean = false;
+  yearlyTimeStep = false;
   projections = projections;
   showAlaskaProjection = false;
-  downloadStatus : string = "inactive";
+  downloadStatus = "inactive";
 
   @ViewChild('validationErrorModal')
   validationErrorModal: ModalComponent;
@@ -139,6 +140,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.selectedYear = 2016;
       this.yearlyTimeStep = true;
       this.setYears(2016, this.previousYear);
+    }
+    if (layer.name.includes('ncep_alaska_historic')) {
+      this.selectedDoy = null;
+      this.selectedDate = '2017-01-01';
+      this.selectedYear = 2017;
+      this.yearlyTimeStep = true;
+      this.setYears(2017, this.previousYear);
     }
     this.selectedLayer = layer;
     this.initializeSelectedProjection('4269');
@@ -350,9 +358,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   getGeoserverUrl(): string {
     let url = '';
     if (location.hostname.includes('local')) {
-      url = 'http://geoserver-dev.usanpn.org/geoserver/';
+      url = 'https://geoserver-dev.usanpn.org/geoserver/';
     } else if (location.hostname.includes('dev')) {
-      url = 'http://geoserver-dev.usanpn.org/geoserver/';
+      url = 'https://geoserver-dev.usanpn.org/geoserver/';
     } else {
       url = 'https://geoserver.usanpn.org/geoserver/';
     }
@@ -612,7 +620,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           range: this.getRegionExtent(),
           doi: this.getDOI(),
           mime: this.selectedFormat.syntax,
-          metadata_url: this.selectedLayer.metadataUrl,
+          metadata_url: this.selectedLayer.metadataUrl.replace('http','https') ,
           resource_url: this.getGeoserverUrl()
         });
 
@@ -622,15 +630,16 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.downloadModal.size = 'lg';
         this.downloadModal.open();
 
-        let popServerUrl = location.protocol;
+        let popServerUrl = '';
+
         if(location.hostname.includes('local')) {
-            popServerUrl += '//' + location.hostname;
+            popServerUrl += 'http://' + location.hostname;
         }
         else if(location.hostname.includes('dev')) {
-            popServerUrl += '//data-dev.usanpn.org';
+            popServerUrl += 'https://data-dev.usanpn.org';
         }
         else {
-            popServerUrl += '//data.usanpn.org';
+            popServerUrl += 'https://data.usanpn.org';
         }
 
         //let popURL = 'http://localhost:3002/grb/package';
