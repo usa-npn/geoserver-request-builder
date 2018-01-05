@@ -13,6 +13,4 @@ export interface GeoserverLayer {
   miny: number;
   crs: string;
   selected: boolean;
-  
-  
 }

@@ -38,14 +38,14 @@ export class AppComponent implements OnInit, AfterViewInit {
   selectedDate: string;
   selectedYear: number = this.previousYear;
   selectedDoy: number;
-  stateBorders: boolean = false;
-  showColorRamp: boolean = true;
+  stateBorders = false;
+  showColorRamp = true;
   validationErrorModalTitle: String;
   validationErrorModalBody: String;
-  yearlyTimeStep: boolean = false;
+  yearlyTimeStep = false;
   projections = projections;
   showAlaskaProjection = false;
-  downloadStatus : string = "inactive";
+  downloadStatus = "inactive";
 
   @ViewChild('validationErrorModal')
   validationErrorModal: ModalComponent;
@@ -140,6 +140,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.selectedYear = 2016;
       this.yearlyTimeStep = true;
       this.setYears(2016, this.previousYear);
+    }
+    if (layer.name.includes('ncep_alaska_historic')) {
+      this.selectedDoy = null;
+      this.selectedDate = '2017-01-01';
+      this.selectedYear = 2017;
+      this.yearlyTimeStep = true;
+      this.setYears(2017, this.previousYear);
     }
     this.selectedLayer = layer;
     this.initializeSelectedProjection('4269');
