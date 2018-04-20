@@ -70,6 +70,8 @@ export function getCaption(layerName, dateText, yearText, doyText) {
     // spring index anomaly
     [`si-x:leaf_anomaly`, `Spring Index First Leaf Anomaly Through ${dateText} Using NCEP and PRISM Data`],
     [`si-x:bloom_anomaly`, `Spring Index First Bloom Anomaly Through ${dateText} Using NCEP and PRISM Data`],
+    [`si-x:leaf_anomaly_prism`, `Spring Index First Leaf Anomaly Through ${dateText} Using PRISM Data`],
+    [`si-x:bloom_anomaly_prism`, `Spring Index First Bloom Anomaly Through ${dateText} Using PRISM Data`],
     // spring index BEST long term historic
     [`si-x:average_leaf_best`, `Spring Index First Leaf ${yearText} Using BEST Data`],
     [`si-x:average_bloom_best`, `Spring Index First Bloom ${yearText} Using BEST Data`]

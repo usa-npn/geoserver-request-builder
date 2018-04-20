@@ -46,6 +46,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   projections = projections;
   showAlaskaProjection = false;
   downloadStatus = "inactive";
+  nameFilter = "";
 
   @ViewChild('validationErrorModal')
   validationErrorModal: ModalComponent;
@@ -65,6 +66,10 @@ export class AppComponent implements OnInit, AfterViewInit {
                 this.wmsLayers = [];
 
               }
+
+  filterChange() {
+
+  }
 
   selectedDateChange(event) {
     if (event.value && event.value.target && event.value.target.children[0]) {
@@ -115,6 +120,11 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.selectedDoy = day;
       this.selectedDate = null;
     }
+    if (layer.dimensionRange.includes('2017-01-01') || layer.name.includes('alaska')) {
+      this.selectedDoy = null;
+      this.selectedDate = now.toISOString().slice(0, 10);
+      this.yearlyTimeStep = false;
+    }
     if (layer.dimensionRange.includes('1981')) {
       this.selectedDoy = null;
       this.selectedDate = (now.getFullYear() - 1).toString() + '-01-01';
@@ -128,11 +138,6 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.selectedYear = 2013;
       this.yearlyTimeStep = true;
       this.setYears(1880, 2013);
-    }
-    if (layer.dimensionRange.includes('2017-01-01') || layer.name.includes('alaska')) {
-      this.selectedDoy = null;
-      this.selectedDate = now.toISOString().slice(0, 10);
-      this.yearlyTimeStep = false;
     }
     if (layer.name.includes('ncep_historic') || layer.name.includes('anomaly_historic')) {
       this.selectedDoy = null;

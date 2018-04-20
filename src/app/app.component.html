@@ -42,13 +42,19 @@
         <div class="panel-body">
           <div class="row">
             <div class="col-md-8">
+
+                <div class="input-group">
+                  <span class="input-group-addon">Layer Filter:</span>
+                  <input type="text" class="form-control" placeholder="" aria-describedby="basic-addon1" name="nameFilter" [(ngModel)]="nameFilter" (keyup)="filterChange()">
+                </div>
+
               <div class="dropdown">
                 <button class="btn btn-default dropdown-toggle" type="button" id="layersDropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                   {{getSelectedLayer()}}
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-short" aria-labelledby="layersDropdownMenu">
-                  <li *ngFor="let layer of wmsLayers" (click)="setSelectedLayer(layer)"><a href="javascript:;">{{layer.title}}</a></li>
+                  <li *ngFor="let layer of wmsLayers | searchPipe:nameFilter" (click)="setSelectedLayer(layer)"><a href="javascript:;">{{layer.title}}</a></li>
                 </ul>
               </div>
             </div>

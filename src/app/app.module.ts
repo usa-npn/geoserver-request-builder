@@ -10,6 +10,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import {ProjectionPipe} from './projection.pipe';
 import {ActivatedRoute, Params, Router, RouterModule, Routes} from '@angular/router';
+import { SearchPipe } from './search.pipe';
 
 const routes : Routes = [
     {path: '', component : AppComponent}
@@ -17,7 +18,7 @@ const routes : Routes = [
  
 
 @NgModule({
-    declarations: [AppComponent, DatePicker, ProjectionPipe],
+    declarations: [AppComponent, DatePicker, ProjectionPipe, SearchPipe],
     imports:      [BrowserModule, HttpModule, FormsModule, Ng2Bs3ModalModule, RouterModule.forRoot(routes) ],
     bootstrap:    [AppComponent],
     providers: [GeoserverService]
