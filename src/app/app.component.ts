@@ -274,6 +274,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (!this.selectedLayer) {
       return 'Select a layer to view its dimension range.';
     }
+    if (this.selectedLayer.name.includes('buffel')) { // temp for testing
+      this.minDate = '2018-01-01';
+      this.maxDate = '2018-11-01';
+      return '2018-01-01 Through 2018-11-01';
+    }
     if (this.selectedLayer.name.includes('ncep_historic') || this.selectedLayer.name.includes('anomaly_historic')) {
       this.minDate = '2016-01-01';
       this.maxDate = (rightNow.getFullYear() - 1).toString() + '-01-01';
