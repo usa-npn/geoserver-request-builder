@@ -79,7 +79,7 @@ export function getCaption(layerName, dateText, yearText, doyText) {
     [`si-x:average_leaf_best`, `Spring Index First Leaf ${yearText} Using BEST Data`],
     [`si-x:average_bloom_best`, `Spring Index First Bloom ${yearText} Using BEST Data`],
     // buffelgrass model
-    [`precipitation:buffelgrass_prism`, `Buffelgrass Outlook ${dateText} Using PRISM Data (Results Provisional)`],
+    [`precipitation:buffelgrass_prism`, `Buffelgrass Outlook ${dateText} Using PRISM Data, Results Provisional`],
 
   ]);
   return captions.get(layerName);
