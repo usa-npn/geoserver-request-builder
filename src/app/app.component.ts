@@ -3,12 +3,13 @@ import { GeoserverService } from './geoserver.service';
 import { GeoserverLayer } from './geoserver-layer';
 import { GeoserverFormat } from './geoserver-format';
 import { projections, Projection } from './projection';
-import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalComponent } from 'ng2-bs3-modal';
 import { getCaption } from './captions';
 import * as proj4 from 'proj4';
 import {ActivatedRoute, Params} from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
-import {Http, Response, Headers} from '@angular/http';
+import { Subscription } from 'rxjs';
+// import {Http, Response, Headers} from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
 
 
 
@@ -48,11 +49,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   downloadStatus = "inactive";
   nameFilter = "";
 
-  @ViewChild('validationErrorModal')
-  validationErrorModal: ModalComponent;
+  @ViewChild('validationErrorModal', {static: false})
+  validationErrorModal: BsModalComponent;
 
-  @ViewChild('downloadModal')
-  downloadModal: ModalComponent;
+  @ViewChild('downloadModal', {static: false})
+  downloadModal: BsModalComponent;
 
   public wmsLayers : GeoserverLayer[];
   private subscriber : Subscription;
@@ -61,7 +62,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   constructor(public _geoserverService: GeoserverService,
               private cdr: ChangeDetectorRef,
               private activatedRoute : ActivatedRoute,
-              private http: Http ) {
+              private http: HttpClient ) {
 
                 this.wmsLayers = [];
 
@@ -618,11 +619,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   downloadButtonPressed(): void {
     if (this.validateRequest(true)) {
-//      window.open(this.getGeoserverUrl());
 
-
-        var headers = new Headers();
-        headers.append('Content-Type', 'application/json');
+        var headers = new HttpHeaders({'Content-Type':'application/json; charset=utf-8'});
 
         var data = JSON.stringify({
           citation_url: this.getCitationURL(),
@@ -643,7 +641,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         let popServerUrl = '';
 
         if(location.hostname.includes('local')) {
-            popServerUrl += 'http://' + location.hostname;
+            popServerUrl += 'https://data-dev.usanpn.org';
         }
         else if(location.hostname.includes('dev')) {
             popServerUrl += 'https://data-dev.usanpn.org';
@@ -653,25 +651,22 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
 
         //let popURL = 'http://localhost:3002/grb/package';
-        this.http.post(popServerUrl + ":3002/grb/package", data, { headers: headers })
-                // .replace("http://data-dev", "https://data-dev")
-                // .replace("http://data.usanpn", "https://data.usanpn") + this.config.getPopDownloadEndpoint(), data, { headers: headers })
+        this.http.post(popServerUrl + ":3002/grb/package", data, { headers })
             .subscribe((res:Response) => {
-                console.log(res.json());
                 this.downloadStatus = 'inactive';
-              if(res.json().download_path === "error") {
+                if(res['download_path'] === "error") {
+                    this.downloadStatus = 'inactive';
+                }
+                else {
+                  window.location.assign(res['download_path']);
                   this.downloadStatus = 'inactive';
-              }
-              else {
-                window.location.assign(res.json().download_path);
-                this.downloadStatus = 'inactive';
-                this.downloadModal.close();
-              }
+                  this.downloadModal.close();
+                }
+            }, err=>{
+              console.log(err);
             });
     }
   }
-
-
 
   ngOnInit() {
     this._geoserverService.initWmsLayers();
@@ -679,101 +674,92 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.subscriber = this._geoserverService.wmsLayers.subscribe((ourLayers : GeoserverLayer[]) => {
 
-
         this.activatedRoute.queryParams.subscribe((params: Params) => {
 
-            let service = params['service'];
-            if(service && (service == 'wms' || service == 'wcs') ){
-                this.service = service;
-            }
+          let service = params['service'];
+          if(service && (service == 'wms' || service == 'wcs') ){
+              this.service = service;
+          }
 
-            let layerName = params['layer'];
-            if(layerName){
-                this.defaultLayerName = layerName;
-            }
+          let layerName = params['layer'];
+          if(layerName){
+              this.defaultLayerName = layerName;
+          }
 
-            if(service == "wms"){
-                let stateBorder = params['state_border'];
-                if(stateBorder && stateBorder == 1){
-                    this.stateBorders = true;
-                }
+          if(service == "wms"){
+              let stateBorder = params['state_border'];
+              if(stateBorder && stateBorder == 1){
+                  this.stateBorders = true;
+              }
 
-                let colors = params['colors'];
-                if(colors && colors == 1){
-                    this.showColorRamp = true;
-                }else if(colors && colors != 1){
-                    this.showColorRamp = false;
-                }
+              let colors = params['colors'];
+              if(colors && colors == 1){
+                  this.showColorRamp = true;
+              }else if(colors && colors != 1){
+                  this.showColorRamp = false;
+              }
 
-                let width = params['width'];
-                let height = params['height'];
+              let width = params['width'];
+              let height = params['height'];
 
-                if(width && height){
-                    this.urlWidth = parseInt(width,0);
-                    this.urlHeight = parseInt(height,0);
-                }
+              if(width && height){
+                  this.urlWidth = parseInt(width,0);
+                  this.urlHeight = parseInt(height,0);
+              }
+          }
 
+          let format = params['format'];
+          if(format){
+              let arr = null;
+              if(service == "wms"){
+                  arr = this._geoserverService.wmsFormats;
+              }else if(service == "wcs"){
+                  arr = this._geoserverService.wcsFormats;
+              }
 
-            }
+              if(arr){
+                  arr.forEach((formatType : any) => {
 
-            let format = params['format'];
-            if(format){
-                let arr = null;
-                if(service == "wms"){
-                    arr = this._geoserverService.wmsFormats;
-                }else if(service == "wcs"){
-                    arr = this._geoserverService.wcsFormats;
-                }
+                      if(formatType.syntax == format){
+                          this.setSelectedFormat(formatType)
+                      }
 
-                if(arr){
-                    arr.forEach((formatType : any) => {
+                  });
+              }
+          }
 
-                       if(formatType.syntax == format){
-                           this.setSelectedFormat(formatType)
-                       }
+          let proj = params['projection'];
+          if(proj){
+              let proj_arr = ['4269','3857','2163','5936'];
 
-                    });
-                }
-            }
+              if(proj_arr.indexOf(proj) > -1){
+                  this.initializeSelectedProjection(proj);
+              }
 
-            let proj = params['projection'];
-            if(proj){
-                let proj_arr = ['4269','3857','2163','5936'];
+          }
 
-                if(proj_arr.indexOf(proj) > -1){
-                    this.initializeSelectedProjection(proj);
-                }
+          /**
+           * We collect the date/year/doy variable here and set it
+           * but it must be set again later after the layer is set
+           * because the layer setting function has some logic that
+           * sets the apporpirate date field.
+           */
+          let date = params['date'];
+          if(date){
+              this.selectedDate = date;
+          }
 
-            }
+          let doy = params['doy'];
+          if(doy){
+              this.selectedDoy = doy;
+          }
 
+          let year = params['year'];
+          if(year){
+              this.selectedYear = year;
+          }
 
-
-
-            /**
-             * We collect the date/year/doy variable here and set it
-             * but it must be set again later after the layer is set
-             * because the layer setting function has some logic that
-             * sets the apporpirate date field.
-             */
-            let date = params['date'];
-            if(date){
-                this.selectedDate = date;
-            }
-
-            let doy = params['doy'];
-            if(doy){
-                this.selectedDoy = doy;
-            }
-
-            let year = params['year'];
-            if(year){
-                this.selectedYear = year;
-            }
-
-
-
-
-          });
+        });
 
 
 

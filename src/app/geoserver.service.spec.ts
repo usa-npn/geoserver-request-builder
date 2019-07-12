@@ -4,7 +4,6 @@ import { TestBed, inject } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { GeoserverService } from './geoserver.service';
 import { GeoserverLayer } from './geoserver-layer';
-import { HttpModule } from '@angular/http';
 import { BrowserModule  } from '@angular/platform-browser';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -12,7 +11,7 @@ import 'rxjs/add/operator/map';
 describe('Geoserver service', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ BrowserModule, HttpModule, FormsModule],
+      imports: [ BrowserModule, FormsModule],
       providers: [GeoserverService]
     });
     TestBed.compileComponents();

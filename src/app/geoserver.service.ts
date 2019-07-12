@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { GeoserverLayer } from './geoserver-layer';
 import { GeoserverFormat } from './geoserver-format';
+import { map } from "rxjs/operators"; 
 
 declare function require(name: string);
 
@@ -46,7 +47,7 @@ export class GeoserverService {
     {name: 'Plain Text', syntax: 'text/plain', description: ''},
   ];
 
-  constructor (private http: Http) {}
+  constructor (private http: HttpClient) {}
 
   initWmsLayers() {
     this.getWmsLayers().subscribe(
@@ -121,15 +122,10 @@ export class GeoserverService {
     } else {
       wmsCapabilitiesUrl = window.location.protocol + '//geoserver.usanpn.org/geoserver/ows?service=wms&version=1.3.0&request=GetCapabilities';
     }
-    return this.http.get(wmsCapabilitiesUrl)
-      .map(res => <any> res.text())
-      .catch(this.handleError);
+    // this.http.get(wmsCapabilitiesUrl,{responseType: 'text'}).subscribe((res)=>{
+    //   console.log(res);
+    // });
+    return this.http.get(wmsCapabilitiesUrl, {responseType: 'text'});
   }
-
-  private handleError (error: Response) {
-    console.error(error);
-    return Observable.throw(error.json().error || 'Server error');
-  }
-
 
 }

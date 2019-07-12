@@ -1,6 +1,6 @@
 # USA-NPN Geoserver Request Builder
 
-This repository contains the front end [angular2](https://angular.io/) code for the [USA-NPN geoserver request builder](https://www.usanpn.org/geoserver-request-builder). The main purpose of this project is to guide a user through downloading USA-NPN phenology maps.
+This repository contains the front end [angular8](https://angular.io/) code for the [USA-NPN geoserver request builder](https://www.usanpn.org/geoserver-request-builder). The main purpose of this project is to guide a user through downloading USA-NPN phenology maps from the geoserver.
 
 ## Getting Started
 
@@ -26,18 +26,18 @@ npm install
 ```
 The command installs all dependencies listed in the package.json file into a folder called node_modules.
 
-This project takes advantage of the [angular cli](https://cli.angular.io/) which uses webpack to build and bundle the project. An npm build script is setup to trigger this process.
+This project takes advantage of the [angular cli](https://cli.angular.io/) which uses webpack to build and bundle the project. An npm build script is setup to trigger this process putting the built project in the dist folder.
 
 ```
 cd geoserver-request-builder
-npm run build
+ng build --prod
 ```
 
 If you are not running the project a webserver like apache or nginx, you can use the webpack dev server to serve the pages
 
 ```
 cd geoserver-request-builder
-npm start
+ng serve
 ```
 
 ## Deployment

@@ -13,7 +13,7 @@ module.exports = function (config) {
     ],
     files: [
       { pattern: './node_modules/jquery/dist/jquery.js', watched: false },
-      { pattern: './src/test.ts', watched: false }
+      
     ],
     preprocessors: {
       './src/test.ts': ['angular-cli']
@@ -22,15 +22,12 @@ module.exports = function (config) {
       'text/x-typescript': ['ts','tsx']
     },
     remapIstanbulReporter: {
-      reports: {
+      dir: require('path').join(__dirname, 'coverage'), reports: {
         html: 'coverage',
         lcovonly: './coverage/coverage.lcov'
       }
     },
-    angularCli: {
-      config: './angular-cli.json',
-      environment: 'dev'
-    },
+    
     reporters: config.angularCli && config.angularCli.codeCoverage
               ? ['progress', 'karma-remap-istanbul']
               : ['progress'],

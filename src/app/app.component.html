@@ -7,7 +7,7 @@
 
       <div class="panel panel-default">
         <div class="panel-body">
-          <strong>Complete the fields below to build a request url for the USA-NPN Geoserver instance. Once your request is built you can copy the url or click the 'Send Request' button to view the map in a new tab or download the coverage requested.</strong>
+          <strong>Complete the fields below to build a request url for the USA-NPN Geoserver instance. Once your request is built you can copy the url or click the 'Get Data' button to view the map in a new tab or download the coverage requested.</strong>
         </div>
       </div>
 
@@ -280,34 +280,38 @@
         </div>
       </div>
 
-      <button type="button" class="btn btn-success btn-execute" (click)="requestButtonPressed()">Get Data</button>
-      <button type="button" class="btn btn-success btn-execute" (click)="downloadButtonPressed()">Get Data with Metadata and Citation</button>
-      
-      
+      <div class="row">
+        <div class="col-sm-6">
+          <button type="button" class="btn btn-success btn-execute" (click)="requestButtonPressed()" style="width: 100%">Get Data</button>
+        </div>
+        <div class="col-sm-6">
+          <button type="button" class="btn btn-success btn-execute" (click)="downloadButtonPressed()" style="width: 100%">Get Data with Metadata and Citation</button>
+        </div>
+      </div>
 
     </div>
   </div>
 </div>
 
-<modal #validationErrorModal>
-  <modal-header>
+<bs-modal #validationErrorModal>
+  <bs-modal-header>
     <h4 class="modal-title">{{validationErrorModalTitle}}</h4>
-  </modal-header>
-  <modal-body>
+  </bs-modal-header>
+  <bs-modal-body>
     {{validationErrorModalBody}}
-  </modal-body>
-  <modal-footer>
+  </bs-modal-body>
+  <bs-modal-footer>
     <button type="button" class="btn btn-default" (click)="validationErrorModal.close();">Close</button>
-  </modal-footer>
-</modal>
+  </bs-modal-footer>
+</bs-modal>
 
 
 
-<modal #downloadModal>
-    <modal-header>
+<bs-modal #downloadModal>
+    <bs-modal-header>
         <h1 class="modal-title" [class.hide]="getDownloadStatus() != 'downloading'"><i class="fa fa-refresh fa-spin" style="font-size:30px"></i>  Downloading</h1>
-    </modal-header>
-    <modal-body>
+    </bs-modal-header>
+    <bs-modal-body>
         <div class="container download-modal">
         <div class="jumbotron">
             
@@ -315,5 +319,5 @@
             
         </div>
         </div>
-    </modal-body>
-</modal>
+    </bs-modal-body>
+</bs-modal>
