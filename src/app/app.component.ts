@@ -241,6 +241,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.setExtent(-180.0, 0.0, 0.0, 90.0);
           this.setWidthAndHeight(1600, 800);
         }
+      } else if (this.selectedLayer.name.includes('buffelgrass')) {
+          this.setExtent(-114.8165100, -104, 30, 37.5);
+          this.setWidthAndHeight(800, 600);
       } else {
         if (projection.epsg === '3857') {
           this.setExtent(-14000000, -7000000, 2700000, 6450000);
@@ -334,6 +337,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (layer.name.includes('agdd')) {
       return 'gdd:agdd_web';
     }
+    if(layer.name.includes('buffelgrass')) {
+      return 'precipitation:buffelgrass';
+    }
   }
 
   getLayerColorRampUrl(): string {
@@ -388,7 +394,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
         url = url.concat(`&bbox=${this.selectedLayer.miny},${this.selectedLayer.minx},${this.selectedLayer.maxy},${this.selectedLayer.maxx}`);
         url = url.concat(`&srs=${this.selectedLayer.crs}`);
-
         url = url.concat('&layers=' + this.selectedLayer.name);
         if (this.stateBorders) {
           url = url.concat(',' + this.selectedLayer.workspace + ':states');
@@ -397,7 +402,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (style) {
           url = url.concat('&styles=' + style + ',');
         }
-        if (this.showColorRamp) {
+        if(this.selectedLayer.name.includes("buffelgrass")) {
+          url = url.concat('&format_options=layout:buffelgrass');
+        } else if (this.showColorRamp) {
           if (this.selectedLayer.description.toLowerCase().includes('provisional')) {
             url = url.concat('&format_options=layout:provisional');
           } else {
