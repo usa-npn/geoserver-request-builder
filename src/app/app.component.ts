@@ -33,6 +33,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   selectedLayer: GeoserverLayer;
   selectedFormat: GeoserverFormat;
   selectedProjection: Projection;
+  layerHasTemporalDim = true;
   years: number[] = [];
   minDate: string;
   maxDate: string;
@@ -113,47 +114,52 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (layer.name.includes('alaska')) {
       this.showAlaskaProjection = true;
     }
-    if (layer.dimensionRange.includes('1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,')) {
-      const start: any = new Date(now.getFullYear(), 0, 0);
-      const diff: any = now - start;
-      const oneDay: number = 1000 * 60 * 60 * 24;
-      const day: any = Math.floor(diff / oneDay);
-      this.selectedDoy = day;
-      this.selectedDate = null;
+    if(!layer.dimensionRange) {
+      this.layerHasTemporalDim = false;
+    } else {
+      if (layer.dimensionRange.includes('1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,')) {
+        const start: any = new Date(now.getFullYear(), 0, 0);
+        const diff: any = now - start;
+        const oneDay: number = 1000 * 60 * 60 * 24;
+        const day: any = Math.floor(diff / oneDay);
+        this.selectedDoy = day;
+        this.selectedDate = null;
+      }
+      if (layer.dimensionRange.includes('2017-01-01') || layer.name.includes('alaska')) {
+        this.selectedDoy = null;
+        this.selectedDate = now.toISOString().slice(0, 10);
+        this.yearlyTimeStep = false;
+      }
+      if (layer.dimensionRange.includes('1981')) {
+        this.selectedDoy = null;
+        this.selectedDate = (now.getFullYear() - 1).toString() + '-01-01';
+        this.selectedYear = now.getFullYear() - 1;
+        this.yearlyTimeStep = true;
+        this.setYears(1981, this.previousYear);
+      }
+      if (layer.dimensionRange.includes('1880')) {
+        this.selectedDoy = null;
+        this.selectedDate = '2013-01-01';
+        this.selectedYear = 2013;
+        this.yearlyTimeStep = true;
+        this.setYears(1880, 2013);
+      }
+      if (layer.name.includes('ncep_historic') || layer.name.includes('anomaly_historic')) {
+        this.selectedDoy = null;
+        this.selectedDate = '2016-01-01';
+        this.selectedYear = 2016;
+        this.yearlyTimeStep = true;
+        this.setYears(2016, this.previousYear);
+      }
+      if (layer.name.includes('ncep_alaska_historic')) {
+        this.selectedDoy = null;
+        this.selectedDate = '2017-01-01';
+        this.selectedYear = 2017;
+        this.yearlyTimeStep = true;
+        this.setYears(2017, this.previousYear);
+      }
     }
-    if (layer.dimensionRange.includes('2017-01-01') || layer.name.includes('alaska')) {
-      this.selectedDoy = null;
-      this.selectedDate = now.toISOString().slice(0, 10);
-      this.yearlyTimeStep = false;
-    }
-    if (layer.dimensionRange.includes('1981')) {
-      this.selectedDoy = null;
-      this.selectedDate = (now.getFullYear() - 1).toString() + '-01-01';
-      this.selectedYear = now.getFullYear() - 1;
-      this.yearlyTimeStep = true;
-      this.setYears(1981, this.previousYear);
-    }
-    if (layer.dimensionRange.includes('1880')) {
-      this.selectedDoy = null;
-      this.selectedDate = '2013-01-01';
-      this.selectedYear = 2013;
-      this.yearlyTimeStep = true;
-      this.setYears(1880, 2013);
-    }
-    if (layer.name.includes('ncep_historic') || layer.name.includes('anomaly_historic')) {
-      this.selectedDoy = null;
-      this.selectedDate = '2016-01-01';
-      this.selectedYear = 2016;
-      this.yearlyTimeStep = true;
-      this.setYears(2016, this.previousYear);
-    }
-    if (layer.name.includes('ncep_alaska_historic')) {
-      this.selectedDoy = null;
-      this.selectedDate = '2017-01-01';
-      this.selectedYear = 2017;
-      this.yearlyTimeStep = true;
-      this.setYears(2017, this.previousYear);
-    }
+    
     this.selectedLayer = layer;
     this.initializeSelectedProjection('4269');
     this.setSelectedProjection(this.selectedProjection);
@@ -277,6 +283,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     if (!this.selectedLayer) {
       return 'Select a layer to view its dimension range.';
+    }
+    if (!this.selectedLayer.dimensionRange) {
+      return 'Layer has no dimension range.';
     }
     if (this.selectedLayer.name.includes('buffel')) { // temp for testing
       this.minDate = '2018-01-01';

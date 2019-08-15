@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { GeoserverLayer } from './geoserver-layer';
 import { GeoserverFormat } from './geoserver-format';
 import { map } from "rxjs/operators"; 
+import {visibleLayers} from './layers';
 
 declare function require(name: string);
 
@@ -57,7 +58,7 @@ export class GeoserverService {
           console.log(result);
           let layers: GeoserverLayer[] = [];
           for (let layer of result.WMS_Capabilities.Capability[0].Layer[0].Layer) {
-            if (layer.Dimension && layer.Style) {
+            if (visibleLayers.includes(layer.Name[0])) { //layer.Dimension && layer.Style
               if (layer.Title[0] !== 'states' && layer.Title[0] !== 'average_leaf_prism_2015') {
                 let crs, maxx, maxy, minx, miny = null;
                 for (let bbox of layer.BoundingBox) {
@@ -78,8 +79,8 @@ export class GeoserverService {
                     name: layer.Name[0],
                     title: layer.Title[0],
                     description: layer.Abstract[0],
-                    dimension: layer.Dimension[0]['$']['name'],
-                    dimensionRange: layer.Dimension[0]['_'],
+                    dimension: layer.Dimension ? layer.Dimension[0]['$']['name'] : null,
+                    dimensionRange: layer.Dimension ? layer.Dimension[0]['_'] : null,
                     metadataUrl: metaData,
                     legendUrl: layer.Style[0]['LegendURL'][0]['OnlineResource'][0]['$']['xlink:href'],
                     maxx: maxx,
