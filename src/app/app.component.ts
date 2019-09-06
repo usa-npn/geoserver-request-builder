@@ -413,6 +413,8 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
         if(this.selectedLayer.name.includes("buffelgrass")) {
           url = url.concat('&format_options=layout:buffelgrass');
+        } else if(this.selectedLayer.name.includes("inca")) {
+          url = url.concat('&format_options=layout:inca');
         } else if (this.showColorRamp) {
           if (this.selectedLayer.description.toLowerCase().includes('provisional')) {
             url = url.concat('&format_options=layout:provisional');
