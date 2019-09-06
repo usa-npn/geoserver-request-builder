@@ -81,15 +81,15 @@ export function getCaption(layerName, dateText, yearText, doyText) {
     // buffelgrass model
     [`precipitation:buffelgrass_prism`, `Buffelgrass Outlook ${dateText} Using PRISM Data, Results Provisional`],
     // inca
-    ["inca:midgdown_median_nad83_02deg", `Mid Greendown Median: median day of year (2001-2017) where greenness last reached 50 percent of its annual maximum`],
-    ["inca:midgup_median_nad83_02deg", `Mid Greenup Median: median day of year (2001-2017) where greenness first reached 50 percent of its annual maximum`],
-    ["inca:eviarea_median_nad83_02deg", `EVI area Median: median cumulative greenness as measured by the 2-band Enhanced Vegetation Index`],
-    ["inca:midgdown_mad_nad83_02deg", `Mid Greendown MAD: Median Absolute Deviation of Mid Greendown days of year for the period 2001-2017`],
-    ["inca:midgup_mad_nad83_02deg", `Mid Greenup MAD: Median Absolute Deviation of Mid Greenup days of year for the period 2001-2017`],
-    ["inca:eviarea_mad_nad83_02deg", `EVI area MAD: Median Absolute Deviation (MAD) of EVI area for the period 2001-2017`],
-    ["inca:midgdown_tsslope_nad83_02deg", `Mid Greendown TS Slope: change (days per year) of the Mid Greendown value over the period 2001-2017`],
-    ["inca:midgup_tsslope_nad83_02deg", `Mid Greenup TS Slope: change (days per year) of the Mid Greenup value over the period 2001-2017`],
-    ["inca:eviarea_tsslope_nad83_02deg", `EVI area TS Slope: change (integrated EVI2 units per year) of the EVI area value over the period 2001-2017`],
+    ["inca:midgdown_median_nad83_02deg", `Mid Greendown Median: median day of year (2001-2017) where greenness last reached 50 percent of its annual maximum, Results Provisional`],
+    ["inca:midgup_median_nad83_02deg", `Mid Greenup Median: median day of year (2001-2017) where greenness first reached 50 percent of its annual maximum, Results Provisional`],
+    ["inca:eviarea_median_nad83_02deg", `EVI area Median: median cumulative greenness as measured by the 2-band Enhanced Vegetation Index, Results Provisional`],
+    ["inca:midgdown_mad_nad83_02deg", `Mid Greendown MAD: Median Absolute Deviation of Mid Greendown days of year for the period 2001-2017, Results Provisional`],
+    ["inca:midgup_mad_nad83_02deg", `Mid Greenup MAD: Median Absolute Deviation of Mid Greenup days of year for the period 2001-2017, Results Provisional`],
+    ["inca:eviarea_mad_nad83_02deg", `EVI area MAD: Median Absolute Deviation (MAD) of EVI area for the period 2001-2017, Results Provisional`],
+    ["inca:midgdown_tsslope_nad83_02deg", `Mid Greendown TS Slope: change (days per year) of the Mid Greendown value over the period 2001-2017, Results Provisional`],
+    ["inca:midgup_tsslope_nad83_02deg", `Mid Greenup TS Slope: change (days per year) of the Mid Greenup value over the period 2001-2017, Results Provisional`],
+    ["inca:eviarea_tsslope_nad83_02deg", `EVI area TS Slope: change (integrated EVI2 units per year) of the EVI area value over the period 2001-2017, Results Provisional`],
 
   ]);
   return captions.get(layerName);
