@@ -32,6 +32,8 @@ export const visibleLayers = [
   "si-x:zabelli_bloom_ncep_alaska_historic",
   "si-x:average_leaf_ncep_alaska_historic",
   "si-x:average_bloom_ncep_alaska_historic",
+  "si-x:leaf_anomaly_historic",
+  "si-x:bloom_anomaly_historic",
   "si-x:30yr_avg_4k_leaf", //4k
   "si-x:30yr_avg_4k_bloom",
   "si-x:30yr_avg_six_leaf", //2.5k
