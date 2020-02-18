@@ -351,17 +351,43 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getLayerColorRampUrl(): string {
-    if (this.selectedLayer) {
-      let colorRampUrl = this.selectedLayer.legendUrl;
-      const style = this.getLayerStyle(this.selectedLayer);
-      if (style) {
-        colorRampUrl += ('&style=' + style);
+  async getLayerColorRampUrl(): Promise<string> {
+    return new Promise((resolve, reject)=> {
+      if (this.selectedLayer) {
+        let colorRampUrl = this.selectedLayer.legendUrl;
+        const style = this.getLayerStyle(this.selectedLayer);
+        if (style) {
+          let prettyStyles = [
+            'gdd:agdd',
+            'gdd:agdd_web',
+            'gdd:agdd_diff', 
+            'si-x:leaf_anomaly',
+            'si-x:leaf_anomaly_black',
+            'si-x:bloom_best_web',
+            'si-x:leafout_best_web',
+            'si-x:bloom_bimonthly_web',
+            'si-x:leafout_bimonthly_web'
+          ];
+          if (prettyStyles.includes(style)) {
+            let geoServices = `data.usanpn.org:3006`;
+            if (location.hostname.includes('dev') || location.hostname.includes('local')) {
+              geoServices = `data-dev.usanpn.org:3006`;
+            }
+            this.http.get(`https://${geoServices}/v1/legends?sldName=${style}`).subscribe(res => {
+              console.log('test');
+              let url = res['legendPath']
+              resolve(url);
+            });
+          }
+          else {
+            colorRampUrl += ('&style=' + style);
+            resolve(colorRampUrl);
+          }
+        }
+      } else {
+        resolve('');
       }
-      return colorRampUrl;
-    } else {
-      return '';
-    }
+    });
   }
 
   // projectCoord(lat: number, long: number) {
@@ -626,8 +652,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  colorrampButtonPressed(): void {
-    window.open(this.getLayerColorRampUrl());
+  async colorrampButtonPressed() {
+    let url = await this.getLayerColorRampUrl();
+    window.open(url);
   }
 
   getDownloadStatus(){
