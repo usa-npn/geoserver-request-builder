@@ -375,7 +375,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
             this.http.get(`https://${geoServices}/v1/legends?sldName=${style}`).subscribe(res => {
               console.log('test');
-              let url = res['legendPath']
+              let url = res['pngPath']
               resolve(url);
             });
           }
