@@ -101,14 +101,16 @@
         <div class="panel-body">
           <div class="row">
             <div class="col-md-6">
-              <input type="checkbox" name="showColorRamp" value="{{showColorRamp}}" [(ngModel)]="showColorRamp"> Show Color Ramp
+              <input type="checkbox" name="showColorRamp" value="{{showColorRamp}}" [(ngModel)]="showColorRamp"> Add Default Color Ramp
+              <div *ngIf="showColorRamp">Selecting this option will integrate the default legend directly into the map. This has limited functionality and may obscure the graphic. If possible use the Download Map Legend button to download a better legend separately.</div>
+              <p></p>
             </div>
             <br>
             <div class="col-md-6">
               <div class="panel panel-default">
                 <div class="panel-body">
-                  Check the box on the left if you would like to show the color ramp next to the map. Click the button below to view the color ramp in a new tab.
-                  <button type="button" class="btn btn-success" [class.hide]="getSelectedLayer() === 'Select a Layer'" (click)="colorrampButtonPressed()">View Color Ramp</button>
+                  Click the button below to download a legend graphic that can be displayed side-by-side with the geospatial data.
+                  <button type="button" class="btn btn-success" [class.hide]="getSelectedLayer() === 'Select a Layer'" (click)="colorrampButtonPressed()">Download Map Legend</button>
                 </div>
               </div>
             </div>
