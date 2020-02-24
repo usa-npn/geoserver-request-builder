@@ -30,6 +30,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   service: string;
   urlWidth: number;
   urlHeight: number;
+  selectedLegendFormat: string = 'png';
   selectedLayer: GeoserverLayer;
   selectedFormat: GeoserverFormat;
   selectedProjection: Projection;
@@ -41,7 +42,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   selectedYear: number = this.previousYear;
   selectedDoy: number;
   stateBorders = false;
-  showColorRamp = true;
+  showColorRamp = false;
   validationErrorModalTitle: String;
   validationErrorModalBody: String;
   yearlyTimeStep = false;
@@ -71,6 +72,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   filterChange() {
 
+  }
+
+  legendFormatChange(event, val) {
+    this.selectedLegendFormat = val;
   }
 
   selectedDateChange(event) {
@@ -351,11 +356,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  async getLayerColorRampUrl(): Promise<string> {
-    return new Promise((resolve, reject)=> {
-      if (this.selectedLayer) {
-        let colorRampUrl = this.selectedLayer.legendUrl;
-        const style = this.getLayerStyle(this.selectedLayer);
+  prettyStyleExists() {
+    if (!this.selectedLayer) {
+      return false;
+    }
+    const style = this.getLayerStyle(this.selectedLayer);
         if (style) {
           let prettyStyles = [
             'gdd:agdd',
@@ -369,22 +374,38 @@ export class AppComponent implements OnInit, AfterViewInit {
             'si-x:leafout_bimonthly_web'
           ];
           if (prettyStyles.includes(style)) {
-            let geoServices = `data.usanpn.org:3006`;
-            if (location.hostname.includes('dev') || location.hostname.includes('local')) {
-              geoServices = `data-dev.usanpn.org:3006`;
-            }
-            this.http.get(`https://${geoServices}/v1/legends?sldName=${style}`).subscribe(res => {
-              console.log('test');
-              let url = res['pngPath']
-              resolve(url);
-            });
+            return true;
+          } else {
+            return false;
           }
-          else {
-            colorRampUrl += ('&style=' + style);
-            resolve(colorRampUrl);
-          }
+        } else {
+          return false;
         }
-      } else {
+  }
+
+  async getLayerColorRampUrl(): Promise<string> {
+    return new Promise((resolve, reject)=> {
+      const style = this.getLayerStyle(this.selectedLayer);
+      if (this.prettyStyleExists()) {
+        let geoServices = `data.usanpn.org:3006`;
+        if (location.hostname.includes('dev') || location.hostname.includes('local')) {
+          geoServices = `data-dev.usanpn.org:3006`;
+        }
+        this.http.get(`https://${geoServices}/v1/legends?sldName=${style}`).subscribe(res => {
+          console.log('test');
+          let url = res['pngPath'];
+          if(this.selectedLegendFormat === 'svg') {
+            url = res['svgPath'];
+          }
+          resolve(url);
+        });
+      }
+      else if(this.selectedLayer) {
+        let colorRampUrl = this.selectedLayer.legendUrl;
+        colorRampUrl += ('&style=' + style);
+        resolve(colorRampUrl);
+      }
+      else {
         resolve('');
       }
     });

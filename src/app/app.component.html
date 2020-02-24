@@ -94,7 +94,33 @@
         </div>
       </div>
 
-      <div class="panel panel-default" [class.hide]="!isSelected('wms')">
+      <div class="panel panel-default" [class.hide]="!isSelected('wcs') || !this.selectedLayer">
+        <div class="panel-heading">
+          <h3 class="panel-title">Color Ramp</h3>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  Click the button below to download a legend graphic that can be displayed side-by-side with the geospatial data.
+                  <button type="button" class="btn btn-success" [class.hide]="getSelectedLayer() === 'Select a Layer'" (click)="colorrampButtonPressed()">Download Map Legend</button>
+                  <p></p>
+                  <div *ngIf="prettyStyleExists()">
+                    <label for="wcs-legend-format"> Legend Format:&nbsp;</label>
+                    <select #wcsLegendFormat id="wcs-legend-format" (change)="legendFormatChange($event, wcsLegendFormat.value)" class="bootstrap-select">
+                      <option value="png" selected="selected">png</option>
+                      <option value="svg">svg</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default" [class.hide]="!isSelected('wms') || !this.selectedLayer">
         <div class="panel-heading">
           <h3 class="panel-title">Color Ramp</h3>
         </div>
@@ -111,6 +137,14 @@
                 <div class="panel-body">
                   Click the button below to download a legend graphic that can be displayed side-by-side with the geospatial data.
                   <button type="button" class="btn btn-success" [class.hide]="getSelectedLayer() === 'Select a Layer'" (click)="colorrampButtonPressed()">Download Map Legend</button>
+                  <div *ngIf="prettyStyleExists()">
+                    <p></p>
+                    <label for="legend-format"> Legend Format:&nbsp;</label>
+                    <select #legendFormat id="legend-format" (change)="legendFormatChange($event, legendFormat.value)" class="bootstrap-select">
+                      <option value="png" selected="selected">png</option>
+                      <option value="svg">svg</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
