@@ -92,8 +92,8 @@ export function getCaption(layerName, dateText, yearText, doyText) {
     ["inca:eviarea_tsslope_nad83_02deg", `EVI area TS Slope: change (integrated EVI2 units per year) of the EVI area value over the period 2001-2017, Results Provisional`],
     // caps
     ["caps:Avg_PEMa0_20201231", `Tomato leafminer: Avg. date of OW gen. 1st adult emergence 2020`],
-    ["caps:Avg_PEMa1Excl1_20201231", `Tomato leafminer: Avg. date of OW gen. 1st adult emergence with climate stress exlusion 2020`],
-    ["caps:Avg_PEMa1Excl2_20201231", `Tomato leafminer: Avg. date of OW gen. 1st adult emergence with climate stress exlusion 2020`],
+    ["caps:Avg_PEMa0Excl1_20201231", `Tomato leafminer: Avg. date of OW gen. 1st adult emergence with climate stress exlusion 2020`],
+    ["caps:Avg_PEMa0Excl2_20201231", `Tomato leafminer: Avg. date of OW gen. 1st adult emergence with climate stress exlusion 2020`],
   ]);
   return captions.get(layerName);
 }
