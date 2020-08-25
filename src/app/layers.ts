@@ -74,8 +74,8 @@ export const visibleLayers = [
   "inca:eviarea_mad_nad83_02deg",
   "inca:midgdown_tsslope_nad83_02deg",
   "inca:midgup_tsslope_nad83_02deg",
-  "inca:eviarea_tsslope_nad83_02deg",
-  "caps:Avg_PEMa0_20201231",
-  "caps:Avg_PEMa0Excl1_20201231",
-  "caps:Avg_PEMa0Excl2_20201231"
+  "inca:eviarea_tsslope_nad83_02deg"
+  // "caps:Avg_PEMa0_20201231",
+  // "caps:Avg_PEMa0Excl1_20201231",
+  // "caps:Avg_PEMa0Excl2_20201231"
 ];
