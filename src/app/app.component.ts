@@ -156,6 +156,13 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.yearlyTimeStep = true;
         this.setYears(2016, this.previousYear);
       }
+      if (layer.name.includes('return_interval')) {
+        this.selectedDoy = null;
+        this.selectedDate = '2020-01-01';
+        this.selectedYear = 2020;
+        this.yearlyTimeStep = true;
+        this.setYears(2020, this.year);
+      }
       if (layer.name.includes('ncep_alaska_historic')) {
         this.selectedDoy = null;
         this.selectedDate = '2017-01-01';
@@ -319,6 +326,10 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.minDate = '2016-01-01';
       this.maxDate = res;
       return '2016-01-01 Through ' + res;
+    } if (this.selectedLayer.name.includes('return_interval')) {
+      this.minDate = '2020';
+      this.maxDate = res;
+      return '2020-01-01 Through ' + res;
     } else {
       this.minDate = (rightNow.getFullYear() - 1).toString() + '-01-01'
       this.maxDate = res;
@@ -327,6 +338,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   getLayerStyle(layer: GeoserverLayer): string {
+    if (layer.name.includes('return_interval')) {
+      return 'si-x:six_return_interval';
+    }
     if (layer.name.includes('tmin') || layer.name.includes('tmax')) {
       return 'climate:celsius_web';
     }
@@ -431,7 +445,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   getGeoserverUrl(): string {
     let url = '';
     if (location.hostname.includes('local')) {
-      url = 'https://geoserver-dev.usanpn.org/geoserver/';
+      url = 'https://geoserver.usanpn.org/geoserver/';
     } else if (location.hostname.includes('dev')) {
       url = 'https://geoserver-dev.usanpn.org/geoserver/';
     } else {

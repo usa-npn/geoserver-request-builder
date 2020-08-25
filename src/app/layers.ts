@@ -56,6 +56,8 @@ export const visibleLayers = [
   "si-x:average_bloom_ncep_alaska",
   "si-x:leaf_anomaly", //daily anomaly current year
   "si-x:bloom_anomaly",
+  "si-x:leaf_return_interval",
+  "si-x:bloom_return_interval",
   "si-x:arnoldred_leaf_prism", // historic annual 1981 - previous year
   "si-x:arnoldred_bloom_prism",
   "si-x:lilac_leaf_prism",

@@ -117,7 +117,7 @@ export class GeoserverService {
   getWmsLayers() {
     let wmsCapabilitiesUrl = '';
     if (location.hostname.includes('local')) {
-      wmsCapabilitiesUrl = window.location.protocol + '//geoserver-dev.usanpn.org/geoserver/ows?service=wms&version=1.3.0&request=GetCapabilities';
+      wmsCapabilitiesUrl = window.location.protocol + '//geoserver.usanpn.org/geoserver/ows?service=wms&version=1.3.0&request=GetCapabilities';
     } else if (location.hostname.includes('dev')) {
       wmsCapabilitiesUrl = window.location.protocol + '//geoserver-dev.usanpn.org/geoserver/ows?service=wms&version=1.3.0&request=GetCapabilities';
     } else {
