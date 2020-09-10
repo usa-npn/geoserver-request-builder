@@ -51,10 +51,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   downloadStatus = "inactive";
   nameFilter = "";
 
-  @ViewChild('validationErrorModal', {static: false})
+  @ViewChild('validationErrorModal')
   validationErrorModal: BsModalComponent;
 
-  @ViewChild('downloadModal', {static: false})
+  @ViewChild('downloadModal')
   downloadModal: BsModalComponent;
 
   public wmsLayers : GeoserverLayer[];
