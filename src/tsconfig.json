@@ -1,5 +1,4 @@
 {
-  "exclude": [ "test.ts" ],
   "compilerOptions": {
     "paths": {
       "timers": [
@@ -25,5 +24,12 @@
     "typeRoots": [
       "../node_modules/@types"
     ]
-  }
+  },
+  "files": [
+    "main.ts",
+    "polyfills.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ]
 }
