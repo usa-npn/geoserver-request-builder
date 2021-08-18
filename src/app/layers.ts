@@ -66,6 +66,8 @@ export const visibleLayers = [
   "si-x:zabelli_bloom_prism",
   "si-x:average_leaf_prism",
   "si-x:average_bloom_prism",
+  "si-x:leaf_anomaly_prism",
+  "si-x:bloom_anomaly_prism",
   "inca:midgdown_median_nad83_02deg",
   "inca:midgup_median_nad83_02deg",
   "inca:eviarea_median_nad83_02deg",
