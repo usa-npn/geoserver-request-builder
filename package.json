@@ -33,7 +33,7 @@
     "http-server": "^0.12.3",
     "jasmine-core": "~3.5.0",
     "jquery": "latest",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "ng2-bs3-modal": "^0.15.0",
     "proj4": "^2.5.0",
     "reflect-metadata": "^0.1.13",
